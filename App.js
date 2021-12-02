@@ -7,6 +7,7 @@ import DrawerItems from './constants/DrawerItems';
 import { FontAwesome } from '@expo/vector-icons';
 import { Ionicons } from '@expo/vector-icons';
 import { DrawerActions } from '@react-navigation/routers';
+import AddTaskScreen from './screens/AddTask';
 
 const Stack = createNativeStackNavigator();
 const Drawer = createDrawerNavigator();
@@ -20,32 +21,42 @@ function App() {
         screenOptions={{
           activeTintColor: '#e91e63',
           itemStyle: { marginVertical: 10 },
+          swipeEdgeWidth: 0,
         }}
       >
         {
-          DrawerItems.map(drawer => <Drawer.Screen
+          DrawerItems.map(drawer => <Stack.Screen
             name={drawer.name}
             key={drawer.name}
             component={drawer.component}
-            options={{
+            options={({ navigation, route }) => ({
+              headerTitle: props => <Text {...props} />,
               fontSize: "30",
-              headerRight: () => (
-                <Ionicons.Button
-                  onPress={() => alert('This is a button!')}
-                  color="#707070"
-                  backgroundColor="#f8f8f8"
-                  name="add"
-                  size="30"
-                />
-              ),
               headerStyle: { height: 80, backgroundColor: "#F8F8F8" },
               headerTitleStyle: {
                 fontSize: "24",
                 color: '#4b4b4b'
               }
-            }}
+            })}
           />)
         }
+        <Stack.Screen
+          name="Add a Task"
+          key='Add a Task'
+          component={AddTaskScreen}
+          options={({ navigation, route }) => ({
+            headerTitle: props => <Text {...props} />,
+            fontSize: "30",
+            headerStyle: { height: 80, backgroundColor: "#F8F8F8" },
+            headerTitleStyle: {
+              fontSize: "24",
+              color: '#4b4b4b'
+            },
+            drawerLabel: () => null,
+            drawerIcon: () => null,
+            headerLeft: () => null
+          })}
+        />
       </Drawer.Navigator>
     </NavigationContainer >
   );

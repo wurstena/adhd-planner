@@ -1,7 +1,22 @@
 import * as React from 'react';
 import { View, Text, StyleSheet } from "react-native";
+import { Ionicons } from '@expo/vector-icons';
 
-export default function TasksScreen() {
+export default function TasksScreen({ navigation }) {
+  React.useLayoutEffect(() => {
+    navigation.setOptions({
+      headerRight: () => (
+        <Ionicons.Button
+          onPress={() => navigation.navigate("Add a Task", {previous: "Tasks"})}
+          color="#707070"
+          backgroundColor="#f8f8f8"
+          name="add"
+          size="30"
+        />
+      ),
+    });
+  }, [navigation]);
+
   return (
     <View style={styles.container}>
       <Text style={{ fontSize: 16, fontWeight: '700' }}>Tasks Screen</Text>

@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
-import { KeyboardAvoidingView, StyleSheet, Text, View, TextInput, TouchableOpacity, Keyboard, ScrollView } from 'react-native';
+import { KeyboardAvoidingView, Button, StyleSheet, Text, View, TextInput, TouchableOpacity, Keyboard, ScrollView } from 'react-native';
 import Task from '../components/Task';
-
+import { Ionicons } from '@expo/vector-icons';
 // export default function DashboardScreen() {
 //     return (
 //       <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
@@ -9,7 +9,6 @@ import Task from '../components/Task';
 //       </View>
 //     );
 // }
-
 
 export default function DashboardScreen({ navigation }) {
     const [task, setTask] = useState();
@@ -26,6 +25,20 @@ export default function DashboardScreen({ navigation }) {
         itemsCopy.splice(index, 1);
         setTaskItems(itemsCopy)
     }
+
+    React.useLayoutEffect(() => {
+        navigation.setOptions({
+            headerRight: () => (
+                <Ionicons.Button
+                    onPress={() => navigation.navigate("Add a Task", {previous: "Dashboard"})}
+                    color="#707070"
+                    backgroundColor="#f8f8f8"
+                    name="add"
+                    size="30"
+                />
+            ),
+        });
+    }, [navigation]);
 
     return (
         <View style={styles.container}>
