@@ -4,6 +4,9 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createDrawerNavigator } from '@react-navigation/drawer';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import DrawerItems from './constants/DrawerItems';
+import { FontAwesome } from '@expo/vector-icons';
+import { Ionicons } from '@expo/vector-icons';
+import { DrawerActions } from '@react-navigation/routers';
 
 const Stack = createNativeStackNavigator();
 const Drawer = createDrawerNavigator();
@@ -14,21 +17,37 @@ function App() {
       <Drawer.Navigator
         drawerType="front"
         initialRouteName="Dashboard"
-        screenOpotions={{
+        screenOptions={{
           activeTintColor: '#e91e63',
           itemStyle: { marginVertical: 10 },
         }}
-
       >
         {
           DrawerItems.map(drawer => <Drawer.Screen
-            name={drawer.name} 
+            name={drawer.name}
             key={drawer.name}
             component={drawer.component}
+            options={{
+              fontSize: "30",
+              headerRight: () => (
+                <Ionicons.Button
+                  onPress={() => alert('This is a button!')}
+                  color="#707070"
+                  backgroundColor="#f8f8f8"
+                  name="add"
+                  size="30"
+                />
+              ),
+              headerStyle: { height: 80, backgroundColor: "#F8F8F8" },
+              headerTitleStyle: {
+                fontSize: "24",
+                color: '#4b4b4b'
+              }
+            }}
           />)
         }
       </Drawer.Navigator>
-    </NavigationContainer>
+    </NavigationContainer >
   );
 }
 
@@ -37,7 +56,7 @@ export default App;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#E8EAED',
+    backgroundColor: '#F8F8F8',
   },
   tasksWrapper: {
     paddingTop: 80,
@@ -77,5 +96,5 @@ const styles = StyleSheet.create({
     borderColor: '#C0C0C0',
     borderWidth: 1,
   },
-  addText: {},
+  addText: {}
 });

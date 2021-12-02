@@ -77,7 +77,7 @@ export default function DashboardScreen({ navigation }) {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: '#E8EAED',
+        backgroundColor: '#F8F8F8',
     },
     tasksWrapper: {
         paddingTop: 80,
