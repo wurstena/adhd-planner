@@ -2,7 +2,7 @@ import * as React from 'react';
 import { View, Text, StyleSheet } from "react-native";
 import { Ionicons } from '@expo/vector-icons';
 
-export default function TasksScreen({ navigation }) {
+export default function TasksScreen({ route, navigation }) {
   React.useLayoutEffect(() => {
     navigation.setOptions({
       headerRight: () => (
@@ -15,7 +15,7 @@ export default function TasksScreen({ navigation }) {
         />
       ),
     });
-  }, [navigation]);
+  }, [navigation, route]);
 
   return (
     <View style={styles.container}>

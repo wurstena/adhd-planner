@@ -1,13 +1,11 @@
 import React, { useState } from 'react';
-import { Button, KeyboardAvoidingView, StyleSheet, Text, View, TextInput, TouchableOpacity, Keyboard, ScrollView } from 'react-native';
+import { StyleSheet, Text } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createDrawerNavigator } from '@react-navigation/drawer';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import DrawerItems from './constants/DrawerItems';
-import { FontAwesome } from '@expo/vector-icons';
-import { Ionicons } from '@expo/vector-icons';
-import { DrawerActions } from '@react-navigation/routers';
 import AddTaskScreen from './screens/AddTask';
+import ViewTaskScreen from './screens/ViewTask';
 
 const Stack = createNativeStackNavigator();
 const Drawer = createDrawerNavigator();
@@ -31,10 +29,10 @@ function App() {
             component={drawer.component}
             options={({ navigation, route }) => ({
               headerTitle: props => <Text {...props} />,
-              fontSize: "30",
+              fontSize: 30,
               headerStyle: { height: 80, backgroundColor: "#F8F8F8" },
               headerTitleStyle: {
-                fontSize: "24",
+                fontSize: 24,
                 color: '#4b4b4b'
               }
             })}
@@ -46,10 +44,27 @@ function App() {
           component={AddTaskScreen}
           options={({ navigation, route }) => ({
             headerTitle: props => <Text {...props} />,
-            fontSize: "30",
+            fontSize: 30,
             headerStyle: { height: 80, backgroundColor: "#F8F8F8" },
             headerTitleStyle: {
-              fontSize: "24",
+              fontSize: 24,
+              color: '#4b4b4b'
+            },
+            drawerLabel: () => null,
+            drawerIcon: () => null,
+            headerLeft: () => null
+          })}
+        />
+        <Stack.Screen
+          name="View Task"
+          key='View Task'
+          component={ViewTaskScreen}
+          options={({ navigation, route }) => ({
+            headerTitle: props => <Text {...props} />,
+            fontSize: 30,
+            headerStyle: { height: 80, backgroundColor: "#F8F8F8" },
+            headerTitleStyle: {
+              fontSize: 24,
               color: '#4b4b4b'
             },
             drawerLabel: () => null,

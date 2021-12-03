@@ -1,15 +1,14 @@
-import * as React from 'react';
-import { View, Text, StyleSheet } from "react-native";
+import React, { Component } from 'react';
+import { Keyboard, TextInput, ScrollView, Button, View, Text, StyleSheet } from "react-native";
 import { Ionicons } from '@expo/vector-icons';
-import { CommonActions } from '@react-navigation/native';
 
-export default function AddTaskScreen({route, navigation}) {
-    // navigation.setParams({ previous: route.params.previous });
+export default function AddTaskScreen({ route, navigation }) {
     React.useLayoutEffect(() => {
+        let previous = route.params.previous
         navigation.setOptions({
             headerLeft: () => (
                 <Ionicons.Button
-                    onPress={() => navigation.navigate(route.params.previous)}
+                    onPress={() => navigation.navigate(previous)}
                     color="#707070"
                     backgroundColor="#f8f8f8"
                     name="close"
@@ -17,12 +16,28 @@ export default function AddTaskScreen({route, navigation}) {
                 />
             ),
         });
-    }, [navigation]);
+    }, [navigation, route]);
 
     return (
         <View style={styles.container}>
-            <Text style={{ fontSize: 16, fontWeight: '700' }}>Add a new Task Screen</Text>
-            <Text>{route.params.previous}</Text>
+            <ScrollView>
+                <View style={styles.inputContainer}>
+                    <Text style={styles.inputHeader}>Title</Text>
+                    <TextInput
+                        style={styles.textInput}
+                        // placeholder="Title"
+                        maxLength={20}
+                        onBlur={Keyboard.dismiss}
+                    />
+                    <Text style={styles.inputHeader}>Category</Text>
+                    <TextInput
+                        style={styles.textInput}
+                        // placeholder="Title"
+                        maxLength={20}
+                        onBlur={Keyboard.dismiss}
+                    />
+                </View>
+            </ScrollView>
         </View>
     );
 }
@@ -71,4 +86,26 @@ const styles = StyleSheet.create({
         borderWidth: 1,
     },
     addText: {},
+    inputContainer: {
+        paddingTop: 15,
+        marginLeft: 20,
+        marginRight: 20
+    },
+    textInput: {
+        backgroundColor: "white",
+        borderColor: '#d3d3d3',
+        borderTopWidth: 1,
+        borderBottomWidth: 1,
+        borderLeftWidth: 1,
+        borderRightWidth: 1,
+        height: 40,
+        fontSize: 18,
+        paddingLeft: 20,
+        paddingRight: 20,
+        marginBottom: 12
+    },
+    inputHeader: {
+        fontSize: 18,
+        paddingBottom: 5
+    }
 });

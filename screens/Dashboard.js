@@ -2,15 +2,8 @@ import React, { useState } from 'react';
 import { KeyboardAvoidingView, Button, StyleSheet, Text, View, TextInput, TouchableOpacity, Keyboard, ScrollView } from 'react-native';
 import Task from '../components/Task';
 import { Ionicons } from '@expo/vector-icons';
-// export default function DashboardScreen() {
-//     return (
-//       <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-//         <Text style={{fontSize:16,fontWeight:'700'}}>Tasks Screen</Text>
-//       </View>
-//     );
-// }
 
-export default function DashboardScreen({ navigation }) {
+export default function DashboardScreen({ route, navigation }) {
     const [task, setTask] = useState();
     const [taskItems, setTaskItems] = useState([]);
 
@@ -38,7 +31,7 @@ export default function DashboardScreen({ navigation }) {
                 />
             ),
         });
-    }, [navigation]);
+    }, [navigation, route]);
 
     return (
         <View style={styles.container}>

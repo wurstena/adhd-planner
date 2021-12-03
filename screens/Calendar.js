@@ -5,17 +5,17 @@ import { Ionicons } from '@expo/vector-icons';
 export default function CalendarScreen({navigation}) {
   React.useLayoutEffect(() => {
     navigation.setOptions({
-      headerRight: () => (
-        <Ionicons.Button
-          onPress={() => navigation.navigate("Add a Task")}
-          color="#707070"
-          backgroundColor="#f8f8f8"
-          name="add"
-          size="30"
-        />
-      ),
+        headerRight: () => (
+            <Ionicons.Button
+                onPress={() => navigation.navigate("Add a Task", {previous: "Calendar"})}
+                color="#707070"
+                backgroundColor="#f8f8f8"
+                name="add"
+                size="30"
+            />
+        ),
     });
-  }, [navigation]);
+}, [navigation, route]);
 
   return (
     <View style={styles.container}>
