@@ -5,6 +5,8 @@ import ModalDropdown from 'react-native-modal-dropdown';
 import { Dimensions } from 'react-native';
 import { ColorPicker } from 'react-native-status-color-picker';
 import RadioForm, { RadioButton, RadioButtonInput, RadioButtonLabel } from 'react-native-simple-radio-button';
+import saveTasks from '../storage/saveInput'
+import { State } from 'react-native-gesture-handler';
 
 let deviceWidth = Dimensions.get('window').width
 
@@ -37,8 +39,23 @@ export default function AddTaskScreen({ route, navigation }) {
                     size="30"
                 />
             ),
+            headerRight: () => (
+                <Button
+                    title="Save"
+                    onPress={() => { handleSave() }}
+                />
+            )
         });
     }, [navigation, route]);
+
+    function handleSave() {
+        let task = {
+            title: title
+        }
+        console.log(title);
+        saveTasks(task)
+        // setTask(null);
+    }
 
     const [modalVisible, setModalVisible] = useState(false);
 
@@ -70,8 +87,11 @@ export default function AddTaskScreen({ route, navigation }) {
 
     var [colors, selectedColor] = useState(["#F44336", "#E91E63", "#9C27B0", "#673AB7", "#3F51B5", "#2196F3", "#03A9F4", "#00BCD4", "#009688", "#4CAF50", "#8BC34A", "#CDDC39", "#FFEB3B", "#FFC107", "#FF9800", "#FF5722", "#795548", "#9E9E9E", "#607D8B"], '#F44336')
     var [radio_button_val] = useState(1)
+    // var [title, category_label, date, time, priority, reward, notes] = useState("", "", "", "", "", "", "")
 
-    onSelect = color => selectedColor = color;
+    const [title, setTitle] = useState();
+
+    var onSelect = color => selectedColor = color;
 
     function getColor(index) {
         if (index == 0) {
@@ -116,15 +136,16 @@ export default function AddTaskScreen({ route, navigation }) {
                 behavior={Platform.OS == "ios" ? "padding" : "height"}
                 keyboardVerticalOffset={100}
                 enabled
-                >
+            >
                 <ScrollView>
                     <View style={styles.inputContainer}>
                         <Text style={styles.inputHeader}>Title</Text>
                         <TextInput
                             style={styles.textInput}
-                            // placeholder="Title"
-                            maxLength={20}
-                            onBlur={Keyboard.dismiss}
+                            placeholder={'Write a task'}
+                            value={title}
+                            onEndEdit={text => setTitle(text)}
+                            // onBlur={Keyboard.dismiss()}
                         />
                         <Text style={styles.inputHeader}>Category</Text>
                         <ModalDropdown style={styles.dropdown}
@@ -165,14 +186,16 @@ export default function AddTaskScreen({ route, navigation }) {
                                 />
                             </View>
                         </View>
-                        <Text style={{ fontSize: 18, paddingBottom: 10, paddingTop: 5 }}>Priority</Text>
-                        <RadioForm
-                            radio_props={radio_props}
-                            initial={1}
-                            formHorizontal={true}
-                            onPress={(index) => { radio_button_val = index }}
-                            radioStyle={{ paddingRight: 50 }}
-                        />
+                        <View style={{ marginBottom: 10 }}>
+                            <Text style={{ fontSize: 18, paddingBottom: 10, paddingTop: 5 }}>Priority</Text>
+                            <RadioForm
+                                radio_props={radio_props}
+                                initial={1}
+                                formHorizontal={true}
+                                onPress={(index) => { radio_button_val = index }}
+                                radioStyle={{ paddingRight: 50 }}
+                            />
+                        </View>
                         <Text style={styles.inputHeader}>Reward</Text>
                         <ModalDropdown style={styles.dropdown}
                             options={REWARD_OPTIONS}
