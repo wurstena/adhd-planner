@@ -1,6 +1,41 @@
-import React, { Component } from 'react';
-import { Keyboard, TextInput, ScrollView, Button, View, Text, StyleSheet } from "react-native";
+import React, { Component, useState } from 'react';
+import { Pressable, Modal, Keyboard, TextInput, ScrollView, Button, View, Text, StyleSheet } from "react-native";
 import { Ionicons } from '@expo/vector-icons';
+import ModalDropdown from 'react-native-modal-dropdown';
+import { Dimensions } from 'react-native';
+
+let deviceWidth = Dimensions.get('window').width
+
+const COLORS = [
+    '#d73964',
+    '#d23440',
+    '#db643a',
+    '#e88334',
+    '#e2a71e',
+    '#e25241',
+    '#d0da59',
+    '#4053ae',
+    '#70b949',
+    '#73564a',
+    '#67ab5a',
+    '#8f36aa',
+    '#f6c244',
+    '#52b9d0',
+    '#4595ec',
+    '#009688',
+    '#5abeA7',
+    '#59bccd',
+    '#4a97e4',
+    '#2d68cd',
+    '#9946c7',
+    '#d9639e',
+    '#6d6f74',
+    '#939287',
+    '#868ea3',
+];
+const DEMO_OPTIONS_1 = [
+    { value: 'Category 1', color: 'red', color_icon: true },
+    { value: '+ Add a New Category', color_icon: false }];
 
 export default function AddTaskScreen({ route, navigation }) {
     React.useLayoutEffect(() => {
@@ -18,8 +53,68 @@ export default function AddTaskScreen({ route, navigation }) {
         });
     }, [navigation, route]);
 
+    const [modalVisible, setModalVisible] = useState(false);
+
+    function dropdown_6_onSelect(idx, value) {
+        console.log(`${idx}, ${value}`)
+        if (value.value === "+ Add a New Category") {
+            setModalVisible(!modalVisible)
+        }
+    };
+
+    function dropdown_renderButtonText(rowData) {
+        return dropdown_renderRow(rowData)
+    }
+
+    function dropdown_renderRow(rowData) {
+        return (
+            <View style={{ flexDirection: "row" }}>
+                {
+                    rowData.color_icon &&
+                    <Ionicons name="square" style={{ color: rowData.color, marginTop: 4, marginLeft: 6 }} size="30" />
+                }
+                <Text style={styles.dropdown_rows}>
+                    {`${rowData.value}`}
+                </Text>
+            </View>
+        );
+    }
+
+
     return (
         <View style={styles.container}>
+            <Modal
+                animationType="fade"
+                transparent={true}
+                visible={modalVisible}
+                onRequestClose={() => {
+                    Alert.alert("Modal has been closed.");
+                    setModalVisible(!modalVisible);
+                }}
+            >
+                <View style={styles.centeredView}>
+                    <View style={styles.modalView}>
+                        <Text style={styles.modalText}>Hello World!</Text>
+                        <NativeColorPicker
+                            colors={COLORS}
+                            selectedColor={selected}
+                            gradient
+                            sort
+                            shadow
+                            markerType="checkmark"
+                            markerDisplay="adjust"
+                            onSelect={(item) => setSelected(item)}
+                            scrollEnabled={false}
+                        />
+                        <Pressable
+                            style={[styles.button, styles.buttonClose]}
+                            onPress={() => setModalVisible(!modalVisible)}
+                        >
+                            <Text style={styles.textStyle}>Hide Modal</Text>
+                        </Pressable>
+                    </View>
+                </View>
+            </Modal>
             <ScrollView>
                 <View style={styles.inputContainer}>
                     <Text style={styles.inputHeader}>Title</Text>
@@ -30,15 +125,47 @@ export default function AddTaskScreen({ route, navigation }) {
                         onBlur={Keyboard.dismiss}
                     />
                     <Text style={styles.inputHeader}>Category</Text>
-                    <TextInput
-                        style={styles.textInput}
-                        // placeholder="Title"
-                        maxLength={20}
-                        onBlur={Keyboard.dismiss}
-                    />
+                    <ModalDropdown style={styles.dropdown}
+                        options={DEMO_OPTIONS_1}
+                        textStyle={styles.dropdown_text}
+                        dropdownStyle={styles.dropdown_dropdown}
+                        onSelect={(idx, value) => dropdown_6_onSelect(idx, value)}
+                        renderRow={dropdown_renderRow.bind(this)}
+                        renderButtonText={(rowData) => dropdown_renderButtonText(rowData)}>
+                    </ModalDropdown>
+                    <View style={{ flexDirection: 'row' }}>
+                        <View
+                            style={{
+                                flexDirection: 'column',
+                                width: (Dimensions.get('screen').width / 2 - 25),
+                                marginRight: 5
+                            }}>
+                            <Text style={styles.inputHeader}>Date</Text>
+                            <TextInput
+                                style={styles.textInput}
+                                // placeholder="Title"
+                                maxLength={20}
+                                onBlur={Keyboard.dismiss}
+                            />
+                        </View>
+                        <View
+                            style={{
+                                flexDirection: 'column',
+                                width: (Dimensions.get('screen').width / 2 - 25),
+                                marginLeft: 5
+                            }}>
+                            <Text style={styles.inputHeader}>Time</Text>
+                            <TextInput
+                                style={styles.textInput}
+                                // placeholder="Title"
+                                maxLength={20}
+                                onBlur={Keyboard.dismiss}
+                            />
+                        </View>
+                    </View>
                 </View>
-            </ScrollView>
-        </View>
+            </ScrollView >
+        </View >
     );
 }
 
@@ -92,20 +219,92 @@ const styles = StyleSheet.create({
         marginRight: 20
     },
     textInput: {
+        fontSize: 18,
         backgroundColor: "white",
         borderColor: '#d3d3d3',
         borderTopWidth: 1,
         borderBottomWidth: 1,
         borderLeftWidth: 1,
         borderRightWidth: 1,
-        height: 40,
-        fontSize: 18,
+        height: 45,
         paddingLeft: 20,
         paddingRight: 20,
-        marginBottom: 12
+        marginBottom: 12,
+        flex: 1
     },
     inputHeader: {
         fontSize: 18,
         paddingBottom: 5
+    },
+    centeredView: {
+        flex: 1,
+        justifyContent: "center",
+        alignItems: "center",
+        marginTop: 22
+    },
+    modalView: {
+        margin: 20,
+        backgroundColor: "white",
+        borderRadius: 20,
+        padding: 35,
+        alignItems: "center",
+        shadowColor: "#000",
+        shadowOffset: {
+            width: 0,
+            height: 2
+        },
+        shadowOpacity: 0.25,
+        shadowRadius: 4,
+        elevation: 5
+    },
+    button: {
+        borderRadius: 20,
+        padding: 10,
+        elevation: 2
+    },
+    buttonOpen: {
+        backgroundColor: "#F194FF",
+    },
+    buttonClose: {
+        backgroundColor: "#2196F3",
+    },
+    textStyle: {
+        color: "white",
+        fontWeight: "bold",
+        textAlign: "center"
+    },
+    modalText: {
+        marginBottom: 15,
+        textAlign: "center"
+    },
+    dropdown: {
+        backgroundColor: "white",
+        borderColor: '#d3d3d3',
+        borderTopWidth: 1,
+        borderBottomWidth: 1,
+        borderLeftWidth: 1,
+        borderRightWidth: 1,
+        height: 45,
+        fontSize: 18,
+        flex: 1,
+        marginBottom: 12
+    },
+    dropdown_text: {
+        marginVertical: 10,
+        marginHorizontal: 6,
+        fontSize: 18,
+        color: '#707070'
+    },
+    dropdown_dropdown: {
+        borderColor: '#d3d3d3',
+        borderWidth: 1,
+        width: Dimensions.get('screen').width - 40,
+        paddingRight: 20,
+    },
+    dropdown_rows: {
+        fontSize: 18,
+        margin: 8,
+        color: "#4b4b4b",
+        height: 25
     }
 });
