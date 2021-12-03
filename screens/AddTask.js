@@ -1,41 +1,28 @@
 import React, { Component, useState } from 'react';
-import { Pressable, Modal, Keyboard, TextInput, ScrollView, Button, View, Text, StyleSheet } from "react-native";
+import { Pressable, Modal, Keyboard, TextInput, ScrollView, Button, View, Text, StyleSheet, KeyboardAvoidingView } from "react-native";
 import { Ionicons } from '@expo/vector-icons';
 import ModalDropdown from 'react-native-modal-dropdown';
 import { Dimensions } from 'react-native';
+import { ColorPicker } from 'react-native-status-color-picker';
+import RadioForm, { RadioButton, RadioButtonInput, RadioButtonLabel } from 'react-native-simple-radio-button';
 
 let deviceWidth = Dimensions.get('window').width
 
-const COLORS = [
-    '#d73964',
-    '#d23440',
-    '#db643a',
-    '#e88334',
-    '#e2a71e',
-    '#e25241',
-    '#d0da59',
-    '#4053ae',
-    '#70b949',
-    '#73564a',
-    '#67ab5a',
-    '#8f36aa',
-    '#f6c244',
-    '#52b9d0',
-    '#4595ec',
-    '#009688',
-    '#5abeA7',
-    '#59bccd',
-    '#4a97e4',
-    '#2d68cd',
-    '#9946c7',
-    '#d9639e',
-    '#6d6f74',
-    '#939287',
-    '#868ea3',
+var radio_props = [
+    { label: 'Low', index: 0, color: "green" },
+    { label: 'Medium', index: 1, color: "orange" },
+    { label: 'High', index: 2, color: "red" }
 ];
+
 const DEMO_OPTIONS_1 = [
-    { value: 'Category 1', color: 'red', color_icon: true },
-    { value: '+ Add a New Category', color_icon: false }];
+    { title: 'Category 1', color: 'red', color_icon: true },
+    { title: '+ Add a New Category', color_icon: false }];
+
+const REWARD_OPTIONS = [
+    { title: 'Eat a piece of candy', color_icon: false },
+    { title: 'Watch an episode of your favorite show', color_icon: false },
+    { title: '+ Add a New Reward', color_icon: false }
+]
 
 export default function AddTaskScreen({ route, navigation }) {
     React.useLayoutEffect(() => {
@@ -56,8 +43,9 @@ export default function AddTaskScreen({ route, navigation }) {
     const [modalVisible, setModalVisible] = useState(false);
 
     function dropdown_6_onSelect(idx, value) {
-        console.log(`${idx}, ${value}`)
-        if (value.value === "+ Add a New Category") {
+        console.log(`${idx}, ${value.title}`)
+        if (value.title === "+ Add a New Category" || value.title === "+ Add a New Reward") {
+            console.log("in if statement")
             setModalVisible(!modalVisible)
         }
     };
@@ -74,10 +62,25 @@ export default function AddTaskScreen({ route, navigation }) {
                     <Ionicons name="square" style={{ color: rowData.color, marginTop: 4, marginLeft: 6 }} size="30" />
                 }
                 <Text style={styles.dropdown_rows}>
-                    {`${rowData.value}`}
+                    {`${rowData.title}`}
                 </Text>
             </View>
         );
+    }
+
+    var [colors, selectedColor] = useState(["#F44336", "#E91E63", "#9C27B0", "#673AB7", "#3F51B5", "#2196F3", "#03A9F4", "#00BCD4", "#009688", "#4CAF50", "#8BC34A", "#CDDC39", "#FFEB3B", "#FFC107", "#FF9800", "#FF5722", "#795548", "#9E9E9E", "#607D8B"], '#F44336')
+    var [radio_button_val] = useState(1)
+
+    onSelect = color => selectedColor = color;
+
+    function getColor(index) {
+        if (index == 0) {
+            return "#14DC3D"
+        } else if (index == 1) {
+            return "#F2B100"
+        } else {
+            return "#FF2D1E"
+        }
     }
 
 
@@ -95,17 +98,11 @@ export default function AddTaskScreen({ route, navigation }) {
                 <View style={styles.centeredView}>
                     <View style={styles.modalView}>
                         <Text style={styles.modalText}>Hello World!</Text>
-                        <NativeColorPicker
-                            colors={COLORS}
-                            selectedColor={selected}
-                            gradient
-                            sort
-                            shadow
-                            markerType="checkmark"
-                            markerDisplay="adjust"
-                            onSelect={(item) => setSelected(item)}
-                            scrollEnabled={false}
-                        />
+                        {<ColorPicker
+                            colors={colors}
+                            selectedColor={selectedColor}
+                            onSelect={onSelect}
+                        />}
                         <Pressable
                             style={[styles.button, styles.buttonClose]}
                             onPress={() => setModalVisible(!modalVisible)}
@@ -115,56 +112,86 @@ export default function AddTaskScreen({ route, navigation }) {
                     </View>
                 </View>
             </Modal>
-            <ScrollView>
-                <View style={styles.inputContainer}>
-                    <Text style={styles.inputHeader}>Title</Text>
-                    <TextInput
-                        style={styles.textInput}
-                        // placeholder="Title"
-                        maxLength={20}
-                        onBlur={Keyboard.dismiss}
-                    />
-                    <Text style={styles.inputHeader}>Category</Text>
-                    <ModalDropdown style={styles.dropdown}
-                        options={DEMO_OPTIONS_1}
-                        textStyle={styles.dropdown_text}
-                        dropdownStyle={styles.dropdown_dropdown}
-                        onSelect={(idx, value) => dropdown_6_onSelect(idx, value)}
-                        renderRow={dropdown_renderRow.bind(this)}
-                        renderButtonText={(rowData) => dropdown_renderButtonText(rowData)}>
-                    </ModalDropdown>
-                    <View style={{ flexDirection: 'row' }}>
-                        <View
-                            style={{
-                                flexDirection: 'column',
-                                width: (Dimensions.get('screen').width / 2 - 25),
-                                marginRight: 5
-                            }}>
-                            <Text style={styles.inputHeader}>Date</Text>
-                            <TextInput
-                                style={styles.textInput}
-                                // placeholder="Title"
-                                maxLength={20}
-                                onBlur={Keyboard.dismiss}
-                            />
+            <KeyboardAvoidingView style={{ flex: 1, flexDirection: 'column', justifyContent: 'center' }}
+                behavior={Platform.OS == "ios" ? "padding" : "height"}
+                keyboardVerticalOffset={100}
+                enabled
+                >
+                <ScrollView>
+                    <View style={styles.inputContainer}>
+                        <Text style={styles.inputHeader}>Title</Text>
+                        <TextInput
+                            style={styles.textInput}
+                            // placeholder="Title"
+                            maxLength={20}
+                            onBlur={Keyboard.dismiss}
+                        />
+                        <Text style={styles.inputHeader}>Category</Text>
+                        <ModalDropdown style={styles.dropdown}
+                            options={DEMO_OPTIONS_1}
+                            textStyle={styles.dropdown_text}
+                            dropdownStyle={styles.dropdown_dropdown}
+                            onSelect={(idx, value) => dropdown_6_onSelect(idx, value)}
+                            renderRow={dropdown_renderRow.bind(this)}
+                            renderButtonText={(rowData) => dropdown_renderButtonText(rowData)}>
+                        </ModalDropdown>
+                        <View style={{ flexDirection: 'row' }}>
+                            <View
+                                style={{
+                                    flexDirection: 'column',
+                                    width: (Dimensions.get('screen').width / 2 - 25),
+                                    marginRight: 5
+                                }}>
+                                <Text style={styles.inputHeader}>Date</Text>
+                                <TextInput
+                                    style={styles.textInput}
+                                    // placeholder="Title"
+                                    maxLength={20}
+                                    onBlur={Keyboard.dismiss}
+                                />
+                            </View>
+                            <View
+                                style={{
+                                    flexDirection: 'column',
+                                    width: (Dimensions.get('screen').width / 2 - 25),
+                                    marginLeft: 5
+                                }}>
+                                <Text style={styles.inputHeader}>Time</Text>
+                                <TextInput
+                                    style={styles.textInput}
+                                    // placeholder="Title"
+                                    maxLength={20}
+                                    onBlur={Keyboard.dismiss}
+                                />
+                            </View>
                         </View>
-                        <View
-                            style={{
-                                flexDirection: 'column',
-                                width: (Dimensions.get('screen').width / 2 - 25),
-                                marginLeft: 5
-                            }}>
-                            <Text style={styles.inputHeader}>Time</Text>
-                            <TextInput
-                                style={styles.textInput}
-                                // placeholder="Title"
-                                maxLength={20}
-                                onBlur={Keyboard.dismiss}
-                            />
-                        </View>
+                        <Text style={{ fontSize: 18, paddingBottom: 10, paddingTop: 5 }}>Priority</Text>
+                        <RadioForm
+                            radio_props={radio_props}
+                            initial={1}
+                            formHorizontal={true}
+                            onPress={(index) => { radio_button_val = index }}
+                            radioStyle={{ paddingRight: 50 }}
+                        />
+                        <Text style={styles.inputHeader}>Reward</Text>
+                        <ModalDropdown style={styles.dropdown}
+                            options={REWARD_OPTIONS}
+                            textStyle={styles.dropdown_text}
+                            dropdownStyle={styles.dropdown_dropdown}
+                            onSelect={(idx, value) => dropdown_6_onSelect(idx, value)}
+                            renderRow={dropdown_renderRow.bind(this)}
+                            renderButtonText={(rowData) => dropdown_renderButtonText(rowData)}>
+                        </ModalDropdown>
+                        <Text style={styles.inputHeader}>Notes</Text>
+                        <TextInput
+                            style={styles.textInput}
+                            multiline={true}
+                            maxLength={20}
+                            onBlur={Keyboard.dismiss}
+                        />
                     </View>
-                </View>
-            </ScrollView >
+                </ScrollView >
+            </KeyboardAvoidingView>
         </View >
     );
 }
