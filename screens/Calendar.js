@@ -2,20 +2,18 @@ import * as React from 'react';
 import { View, Text, StyleSheet } from "react-native";
 import { Ionicons } from '@expo/vector-icons';
 
-export default function CalendarScreen({navigation, route}) {
-  React.useLayoutEffect(() => {
-    navigation.setOptions({
-        headerRight: () => (
-            <Ionicons.Button
-                onPress={() => navigation.navigate("Add a Task", {previous: "Calendar"})}
-                color="#707070"
-                backgroundColor="#f8f8f8"
-                name="add"
-                size="30"
-            />
-        ),
-    });
-}, [navigation, route]);
+export default function CalendarScreen({ navigation, route }) {
+  navigation.setOptions({
+    headerRight: () => (
+      <Ionicons.Button
+        onPress={() => navigation.navigate("Add a Task", { previous: "Calendar" })}
+        color="#707070"
+        backgroundColor="#f8f8f8"
+        name="add"
+        size="30"
+      />
+    ),
+  });
 
   return (
     <View style={styles.container}>

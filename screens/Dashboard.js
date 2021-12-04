@@ -1,37 +1,52 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { KeyboardAvoidingView, Button, StyleSheet, Text, View, TextInput, TouchableOpacity, Keyboard, ScrollView } from 'react-native';
 import Task from '../components/Task';
 import { Ionicons } from '@expo/vector-icons';
+import { completeTask, task_list, completed_task_list } from '../storage/saveInput';
 
 export default function DashboardScreen({ route, navigation }) {
-    const [task, setTask] = useState();
-    const [taskItems, setTaskItems] = useState([]);
+    const [value, setValue] = useState(0); // integer state
 
-    const handleAddTask = () => {
-        Keyboard.dismiss();
-        setTaskItems([...taskItems, task])
-        setTask(null);
+    const completeTaskAtIndex = (index) => {
+        completeTask(index)
+        console.log(completed_task_list)
+        console.log(task_list)
+        setValue(value => value + 1)
     }
 
-    const completeTask = (index) => {
-        let itemsCopy = [...taskItems];
-        itemsCopy.splice(index, 1);
-        setTaskItems(itemsCopy)
+    navigation.setOptions({
+        headerRight: () => (
+            <Ionicons.Button
+                onPress={() => navigation.navigate("Add a Task", { previous: "Dashboard" })}
+                color="#707070"
+                backgroundColor="#f8f8f8"
+                name="add"
+                size="30"
+            />
+        ),
+    });
+
+    const [listOfTasks, setListOfTasks] = useState([])
+    useEffect(() => {
+        setListOfTasks(task_list)
+    }, [navigation, route, task_list, value]);
+
+    function showTasks() {
+        return (
+            <View>
+                {
+                    listOfTasks.map((object, index) => {
+                        return (
+                            <TouchableOpacity key={index} onPress={() => completeTaskAtIndex(index)}>
+                                <Task text={object.title} />
+                            </TouchableOpacity>
+                        )
+                    })
+                }
+            </View>
+        );
     }
 
-    React.useLayoutEffect(() => {
-        navigation.setOptions({
-            headerRight: () => (
-                <Ionicons.Button
-                    onPress={() => navigation.navigate("Add a Task", {previous: "Dashboard"})}
-                    color="#707070"
-                    backgroundColor="#f8f8f8"
-                    name="add"
-                    size="30"
-                />
-            ),
-        });
-    }, [navigation, route]);
 
     return (
         <View style={styles.container}>
@@ -47,35 +62,13 @@ export default function DashboardScreen({ route, navigation }) {
                 <View style={styles.tasksWrapper}>
                     <Text style={styles.sectionTitle}>Today's tasks</Text>
                     <View style={styles.items}>
-                        {/* This is where the tasks will go! */}
                         {
-                            taskItems.map((item, index) => {
-                                return (
-                                    <TouchableOpacity key={index} onPress={() => completeTask(index)}>
-                                        <Task text={item} />
-                                    </TouchableOpacity>
-                                )
-                            })
+                            showTasks()
                         }
                     </View>
                 </View>
 
             </ScrollView>
-
-            {/* Write a task */}
-            {/* Uses a keyboard avoiding view which ensures the keyboard does not cover the items on screen */}
-            <KeyboardAvoidingView
-                behavior={Platform.OS === "ios" ? "padding" : "height"}
-                style={styles.writeTaskWrapper}
-            >
-                <TextInput style={styles.input} placeholder={'Write a task'} value={task} onChangeText={text => setTask(text)} />
-                <TouchableOpacity onPress={() => handleAddTask()}>
-                    <View style={styles.addWrapper}>
-                        <Text style={styles.addText}>+</Text>
-                    </View>
-                </TouchableOpacity>
-            </KeyboardAvoidingView>
-
         </View>
     );
 }
@@ -86,7 +79,7 @@ const styles = StyleSheet.create({
         backgroundColor: '#F8F8F8',
     },
     tasksWrapper: {
-        paddingTop: 80,
+        paddingTop: 20,
         paddingHorizontal: 20,
     },
     sectionTitle: {

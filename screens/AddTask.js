@@ -1,5 +1,5 @@
-import React, { Component, useState } from 'react';
-import { Pressable, Modal, Keyboard, TextInput, ScrollView, Button, View, Text, StyleSheet, KeyboardAvoidingView } from "react-native";
+import React, { Component, useState, useEffect } from 'react';
+import { TouchableOpacity, Pressable, Modal, Keyboard, TextInput, ScrollView, Button, View, Text, StyleSheet, KeyboardAvoidingView } from "react-native";
 import { Ionicons } from '@expo/vector-icons';
 import ModalDropdown from 'react-native-modal-dropdown';
 import { Dimensions } from 'react-native';
@@ -27,44 +27,56 @@ const REWARD_OPTIONS = [
 ]
 
 export default function AddTaskScreen({ route, navigation }) {
-    React.useLayoutEffect(() => {
-        let previous = route.params.previous
-        navigation.setOptions({
-            headerLeft: () => (
-                <Ionicons.Button
-                    onPress={() => navigation.navigate(previous)}
-                    color="#707070"
-                    backgroundColor="#f8f8f8"
-                    name="close"
-                    size="30"
-                />
-            ),
-            headerRight: () => (
-                <Button
-                    title="Save"
-                    onPress={() => { handleSave() }}
-                />
-            )
-        });
-    }, [navigation, route]);
+    let previous = route.params.previous
+    navigation.setOptions({
+        headerLeft: () => (
+            <Ionicons.Button
+                onPress={() => navigation.navigate(previous, {update: false})}
+                color="#707070"
+                backgroundColor="#f8f8f8"
+                name="close"
+                size="30"
+            />
+        ),
+        headerRight: () => (
+            <Button
+                title="Save"
+                onPress={() => { handleSave() }}
+            />
+        )
+    });
 
     function handleSave() {
-        let task = {
-            title: title
+        let priority = "Medium"
+        if (radio_button_val == 0) {
+            priority="Low"
+        } else if (radio_button_val == 2) {
+            priority="High"
         }
-        console.log(title);
-        saveTasks(task)
-        // setTask(null);
+        let taskItem = {
+            title: title,
+            category: category_label,
+            date: date,
+            time: time,
+            priority: priority,
+            notes: notes
+        }
+        saveTasks(taskItem)
+        setTitle(null)
+        setCategoryLabel(null)
+        setDate(null)
+        setTime(null)
+        setNotes(null)
+        navigation.navigate(previous, {update: true})
     }
 
     const [modalVisible, setModalVisible] = useState(false);
 
     function dropdown_6_onSelect(idx, value) {
-        console.log(`${idx}, ${value.title}`)
         if (value.title === "+ Add a New Category" || value.title === "+ Add a New Reward") {
-            console.log("in if statement")
             setModalVisible(!modalVisible)
         }
+        setCategoryLabel(value.title)
     };
 
     function dropdown_renderButtonText(rowData) {
@@ -85,11 +97,16 @@ export default function AddTaskScreen({ route, navigation }) {
         );
     }
 
-    var [colors, selectedColor] = useState(["#F44336", "#E91E63", "#9C27B0", "#673AB7", "#3F51B5", "#2196F3", "#03A9F4", "#00BCD4", "#009688", "#4CAF50", "#8BC34A", "#CDDC39", "#FFEB3B", "#FFC107", "#FF9800", "#FF5722", "#795548", "#9E9E9E", "#607D8B"], '#F44336')
-    var [radio_button_val] = useState(1)
+    const [colors, selectedColor] = useState(["#F44336", "#E91E63", "#9C27B0", "#673AB7", "#3F51B5", "#2196F3", "#03A9F4", "#00BCD4", "#009688", "#4CAF50", "#8BC34A", "#CDDC39", "#FFEB3B", "#FFC107", "#FF9800", "#FF5722", "#795548", "#9E9E9E", "#607D8B"], '#F44336')
+    const [radio_button_val, setRadioButtonVal] = useState(1)
     // var [title, category_label, date, time, priority, reward, notes] = useState("", "", "", "", "", "", "")
+    const [title, setTitle] = useState(null)
+    const [category_label, setCategoryLabel] = useState(null);
+    const [date, setDate] = useState(null);
+    const [time, setTime] = useState(null);
+    const [reward, setReward] = useState(null);
+    const [notes, setNotes] = useState(null);
 
-    const [title, setTitle] = useState();
 
     var onSelect = color => selectedColor = color;
 
@@ -140,13 +157,7 @@ export default function AddTaskScreen({ route, navigation }) {
                 <ScrollView>
                     <View style={styles.inputContainer}>
                         <Text style={styles.inputHeader}>Title</Text>
-                        <TextInput
-                            style={styles.textInput}
-                            placeholder={'Write a task'}
-                            value={title}
-                            onEndEdit={text => setTitle(text)}
-                            // onBlur={Keyboard.dismiss()}
-                        />
+                        <TextInput style={styles.textInput} placeholder={'Write a task'} value={title} onChangeText={text => setTitle(text)} />
                         <Text style={styles.inputHeader}>Category</Text>
                         <ModalDropdown style={styles.dropdown}
                             options={DEMO_OPTIONS_1}
@@ -166,9 +177,10 @@ export default function AddTaskScreen({ route, navigation }) {
                                 <Text style={styles.inputHeader}>Date</Text>
                                 <TextInput
                                     style={styles.textInput}
-                                    // placeholder="Title"
                                     maxLength={20}
+                                    value={date}
                                     onBlur={Keyboard.dismiss}
+                                    onChangeText={(text) => setDate(text)}
                                 />
                             </View>
                             <View
@@ -180,9 +192,10 @@ export default function AddTaskScreen({ route, navigation }) {
                                 <Text style={styles.inputHeader}>Time</Text>
                                 <TextInput
                                     style={styles.textInput}
-                                    // placeholder="Title"
                                     maxLength={20}
                                     onBlur={Keyboard.dismiss}
+                                    value={time}
+                                    onChangeText={(text) => setTime(text)}
                                 />
                             </View>
                         </View>
@@ -192,7 +205,7 @@ export default function AddTaskScreen({ route, navigation }) {
                                 radio_props={radio_props}
                                 initial={1}
                                 formHorizontal={true}
-                                onPress={(index) => { radio_button_val = index }}
+                                onPress={(index) => { setRadioButtonVal(index) }}
                                 radioStyle={{ paddingRight: 50 }}
                             />
                         </View>
@@ -211,6 +224,8 @@ export default function AddTaskScreen({ route, navigation }) {
                             multiline={true}
                             maxLength={20}
                             onBlur={Keyboard.dismiss}
+                            value={notes}
+                            onChangeText={(text) => setNotes(text)}
                         />
                     </View>
                 </ScrollView >
@@ -277,7 +292,7 @@ const styles = StyleSheet.create({
         borderLeftWidth: 1,
         borderRightWidth: 1,
         height: 45,
-        paddingLeft: 20,
+        paddingLeft: 6,
         paddingRight: 20,
         marginBottom: 12,
         flex: 1
