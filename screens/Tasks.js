@@ -3,16 +3,10 @@ import { KeyboardAvoidingView, Button, StyleSheet, Text, View, TextInput, Toucha
 import Task from '../components/Task';
 import { Ionicons } from '@expo/vector-icons';
 import { completeTask, task_list, completed_task_list } from '../storage/saveInput';
+import { useIsFocused } from "@react-navigation/native";
 
 export default function TasksScreen({ route, navigation }) {
   const [value, setValue] = useState(0); // integer state
-
-  const completeTaskAtIndex = (index) => {
-    completeTask(index)
-    console.log(completed_task_list)
-    console.log(task_list)
-    setValue(value => value + 1)
-  }
 
   navigation.setOptions({
     headerRight: () => (
@@ -27,9 +21,12 @@ export default function TasksScreen({ route, navigation }) {
   });
 
   const [listOfTasks, setListOfTasks] = useState([])
+  const isFocused = useIsFocused();
   useEffect(() => {
-    setListOfTasks(task_list)
-  }, [navigation, route, task_list, value]);
+    if (isFocused) {
+      setListOfTasks(task_list)
+    }
+  }, [navigation, route, task_list, value, isFocused]);
 
   function showTasks() {
     return (
@@ -37,9 +34,9 @@ export default function TasksScreen({ route, navigation }) {
         {
           listOfTasks.map((object, index) => {
             return (
-              <TouchableOpacity key={index} onPress={() => completeTaskAtIndex(index)}>
-                <Task text={object.title} />
-              </TouchableOpacity>
+              // <TouchableOpacity key={index} onPress={() => completeTaskAtIndex(index)}>
+              <Task text={object.title} index={index} value={value} setValue={setValue} />
+              // </TouchableOpacity>
             )
           })
         }

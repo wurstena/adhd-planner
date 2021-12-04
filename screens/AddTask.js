@@ -1,5 +1,5 @@
 import React, { Component, useState, useEffect } from 'react';
-import { TouchableOpacity, Pressable, Modal, Keyboard, TextInput, ScrollView, Button, View, Text, StyleSheet, KeyboardAvoidingView } from "react-native";
+import { Alert, Pressable, Modal, Keyboard, TextInput, ScrollView, Button, View, Text, StyleSheet, KeyboardAvoidingView } from "react-native";
 import { Ionicons } from '@expo/vector-icons';
 import ModalDropdown from 'react-native-modal-dropdown';
 import { Dimensions } from 'react-native';
@@ -31,7 +31,7 @@ export default function AddTaskScreen({ route, navigation }) {
     navigation.setOptions({
         headerLeft: () => (
             <Ionicons.Button
-                onPress={() => navigation.navigate(previous, {update: false})}
+                onPress={() => navigation.navigate(previous, { update: false })}
                 color="#707070"
                 backgroundColor="#f8f8f8"
                 name="close"
@@ -46,28 +46,43 @@ export default function AddTaskScreen({ route, navigation }) {
         )
     });
 
+    function createAlert(message) {
+        console.log("in alert")
+        Alert.alert(
+            "Error",
+            message,
+            [
+                { text: "OK", onPress: () => console.log("OK Pressed"), style: "cancel" }
+            ]
+        );
+    }
+
     function handleSave() {
         let priority = "Medium"
         if (radio_button_val == 0) {
-            priority="Low"
+            priority = "Low"
         } else if (radio_button_val == 2) {
-            priority="High"
+            priority = "High"
         }
-        let taskItem = {
-            title: title,
-            category: category_label,
-            date: date,
-            time: time,
-            priority: priority,
-            notes: notes
+        if (title == null || title === "") {
+            return createAlert("You must add a title before saving")
+        } else {
+            let taskItem = {
+                title: title,
+                category: category_label,
+                date: date,
+                time: time,
+                priority: priority,
+                notes: notes
+            }
+            saveTasks(taskItem)
+            setTitle(null)
+            setCategoryLabel(null)
+            setDate(null)
+            setTime(null)
+            setNotes(null)
+            navigation.navigate(previous, { update: true })
         }
-        saveTasks(taskItem)
-        setTitle(null)
-        setCategoryLabel(null)
-        setDate(null)
-        setTime(null)
-        setNotes(null)
-        navigation.navigate(previous, {update: true})
     }
 
     const [modalVisible, setModalVisible] = useState(false);

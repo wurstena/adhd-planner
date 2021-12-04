@@ -1,12 +1,22 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
+import { completeTask, task_list, completed_task_list } from '../storage/saveInput';
+import { forceAnUpdate } from '../screens/Dashboard';
+
 
 const Task = (props) => {
+  // const [value, setValue] = useState(0); // integer state
+  function completeTaskAtIndex(index){
+    completeTask(index)
+    props.setValue(value => value + 1)
+  }
 
   return (
     <View style={styles.item}>
       <View style={styles.itemLeft}>
-        <View style={styles.square}></View>
+        <TouchableOpacity onPress={() => completeTaskAtIndex(props.index)}>
+          <View style={styles.square}></View>
+        </TouchableOpacity>
         <Text style={styles.itemText}>{props.text}</Text>
       </View>
       <View style={styles.circular}></View>
