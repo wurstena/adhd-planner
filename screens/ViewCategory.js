@@ -38,14 +38,6 @@ export default function ViewCategoryScreen({ route, navigation }) {
         }
     }, [navigation, route, category_list, isFocused]);
 
-    // const [colors, setColorList] = useState(["#F44336", "#E91E63", "#9C27B0", "#673AB7", "#3F51B5", "#2196F3", "#03A9F4", "#00BCD4", "#009688", "#4CAF50", "#8BC34A", "#CDDC39", "#FFEB3B", "#FFC107", "#FF9800", "#FF5722", "#795548", "#9E9E9E", "#607D8B"], '#F44336')
-    // const [title, setTitle] = useState(null);
-    // const [notes, setNotes] = useState(null);
-    // const [color, setColor] = useState(null);
-
-
-    var onSelect = (new_color) => setColor(new_color);
-
     return (
         <View style={styles.container}>
             <ScrollView>
