@@ -47,7 +47,6 @@ export default function AddTaskScreen({ route, navigation }) {
     });
 
     function createAlert(message) {
-        console.log("in alert")
         Alert.alert(
             "Error",
             message,
@@ -123,7 +122,7 @@ export default function AddTaskScreen({ route, navigation }) {
     const [notes, setNotes] = useState(null);
 
 
-    var onSelect = color => selectedColor = color;
+    var onSelect = color => selectedColor(color);
 
     function getColor(index) {
         if (index == 0) {

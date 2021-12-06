@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { completeTask, task_list, completed_task_list } from '../storage/saveInput';
-import { forceAnUpdate } from '../screens/Dashboard';
 
 
 const Task = (props) => {
