@@ -8,8 +8,8 @@ import { useIsFocused } from "@react-navigation/native";
 
 
 export default function ViewCategoryScreen({ route, navigation }) {
-    let previous = route.params.previous
-    let index = route.params.index.index
+    const previous = route.params.previous
+    const index = route.params.index.index
     navigation.setOptions({
         headerLeft: () => (
             <Ionicons.Button
@@ -39,21 +39,30 @@ export default function ViewCategoryScreen({ route, navigation }) {
     }, [navigation, route, category_list, isFocused]);
 
     return (
-        <View style={styles.container}>
+        <View style={styles(null).container}>
             <ScrollView>
-                <View style={styles.inputContainer}>
-                    <Text style={styles.inputHeader}>Title</Text>
-                    <Text style={styles.inputHeader}>{listOfCategories[index].title}</Text>
-
-                    <Text style={styles.inputHeader}>Color</Text>
-                    <Text style={styles.inputHeader}>Notes</Text>
+                <View style={styles(null).inputContainer}>
+                    <Text style={styles(null).sectionHeader}>Title</Text>
+                    <Text style={styles(null).sectionContent}>{listOfCategories[index].title}</Text>
+                    <Text style={styles(null).sectionHeader}>Color</Text>
+                    <View style={styles(listOfCategories[0].color).circular}></View>
+                    <Text style={styles(null).sectionHeader}>Notes</Text>
                 </View>
             </ScrollView >
         </View >
     );
 }
 
-const styles = StyleSheet.create({
+const styles = (color) => StyleSheet.create({
+    circular: {
+        width: 50,
+        height: 50,
+        backgroundColor: color,
+        // borderColor: "#F8F8F8",
+        // borderWidth: 2,
+        borderRadius: 30,
+        marginBottom: 15
+    },
     container: {
         flex: 1,
         backgroundColor: '#F8F8F8',
@@ -116,9 +125,14 @@ const styles = StyleSheet.create({
         marginBottom: 12,
         flex: 1
     },
-    inputHeader: {
+    sectionHeader: {
         fontSize: 18,
         paddingBottom: 5
+    },
+    sectionContent: {
+        fontSize: 18,
+        paddingBottom: 15,
+        fontWeight: "bold"
     },
     centeredView: {
         flex: 1,
