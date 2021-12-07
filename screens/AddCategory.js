@@ -41,7 +41,8 @@ export default function AddCategoryScreen({ route, navigation }) {
         } else {
             let categoryItem = {
                 title: title,
-                color: color
+                color: color,
+                color_icon: true
             }
             saveCategory(categoryItem)
             setTitle(null)

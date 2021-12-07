@@ -5,8 +5,9 @@ import ModalDropdown from 'react-native-modal-dropdown';
 import { Dimensions } from 'react-native';
 import { ColorPicker } from 'react-native-status-color-picker';
 import RadioForm, { RadioButton, RadioButtonInput, RadioButtonLabel } from 'react-native-simple-radio-button';
-import saveTasks from '../storage/saveInput'
+import saveTasks, { rewards_list, category_list } from '../storage/saveInput'
 import { State } from 'react-native-gesture-handler';
+import { useIsFocused } from "@react-navigation/native";
 
 let deviceWidth = Dimensions.get('window').width
 
@@ -16,13 +17,10 @@ var radio_props = [
     { label: 'High', index: 2, color: "red" }
 ];
 
-const DEMO_OPTIONS_1 = [
-    { title: 'Category 1', color: 'red', color_icon: true },
+const ADD_CATEGORY_OPTION = [
     { title: '+ Add a New Category', color_icon: false }];
 
-const REWARD_OPTIONS = [
-    { title: 'Eat a piece of candy', color_icon: false },
-    { title: 'Watch an episode of your favorite show', color_icon: false },
+const ADD_REWARD_OPTION = [
     { title: '+ Add a New Reward', color_icon: false }
 ]
 
@@ -69,6 +67,7 @@ export default function AddTaskScreen({ route, navigation }) {
             let taskItem = {
                 title: title,
                 category: category_label,
+                reward: reward,
                 date: date,
                 time: time,
                 priority: priority,
@@ -77,6 +76,7 @@ export default function AddTaskScreen({ route, navigation }) {
             saveTasks(taskItem)
             setTitle(null)
             setCategoryLabel(null)
+            setReward(null)
             setDate(null)
             setTime(null)
             setNotes(null)
@@ -84,20 +84,29 @@ export default function AddTaskScreen({ route, navigation }) {
         }
     }
 
-    const [modalVisible, setModalVisible] = useState(false);
-
-    function dropdown_6_onSelect(idx, value) {
-        if (value.title === "+ Add a New Category" || value.title === "+ Add a New Reward") {
-            setModalVisible(!modalVisible)
+    function dropdown_category_onSelect(idx, value) {
+        if (value.title === "+ Add a New Category") {
+            setCategoryModalVisible(!categoryModalVisible)
         }
-        setCategoryLabel(value.title)
+        else {
+            setCategoryLabel(value.title)
+        }
+    };
+
+    function dropdown_reward_onSelect(idx, value) {
+        if (value.title === "+ Add a New Reward") {
+            setRewardModalVisible(!rewardModalVisible)
+        }
+        else {
+            setReward(value.title)
+        }
     };
 
     function dropdown_renderButtonText(rowData) {
-        return dropdown_renderRow(rowData)
+        return dropdown_renderDropDownRow(rowData)
     }
 
-    function dropdown_renderRow(rowData) {
+    function dropdown_renderDropDownRow(rowData) {
         return (
             <View style={{ flexDirection: "row" }}>
                 {
@@ -111,6 +120,19 @@ export default function AddTaskScreen({ route, navigation }) {
         );
     }
 
+    const [value, setValue] = useState(0); // integer state
+    const [listOfCategories, setListOfCategories] = useState([])
+    const [listOfRewards, setListOfRewards] = useState([])
+    const isFocused = useIsFocused();
+    useEffect(() => {
+        if (isFocused) {
+            setListOfCategories(category_list.concat(ADD_CATEGORY_OPTION))
+            setListOfRewards(rewards_list.concat(ADD_REWARD_OPTION))
+        }
+    }, [navigation, route, category_list, isFocused]);
+
+    const [categoryModalVisible, setCategoryModalVisible] = useState(false);
+    const [rewardModalVisible, setRewardModalVisible] = useState(false);
     const [colors, selectedColor] = useState(["#F44336", "#E91E63", "#9C27B0", "#673AB7", "#3F51B5", "#2196F3", "#03A9F4", "#00BCD4", "#009688", "#4CAF50", "#8BC34A", "#CDDC39", "#FFEB3B", "#FFC107", "#FF9800", "#FF5722", "#795548", "#9E9E9E", "#607D8B"], '#F44336')
     const [radio_button_val, setRadioButtonVal] = useState(1)
     // var [title, category_label, date, time, priority, reward, notes] = useState("", "", "", "", "", "", "")
@@ -121,29 +143,17 @@ export default function AddTaskScreen({ route, navigation }) {
     const [reward, setReward] = useState(null);
     const [notes, setNotes] = useState(null);
 
-
     var onSelect = color => selectedColor(color);
-
-    function getColor(index) {
-        if (index == 0) {
-            return "#14DC3D"
-        } else if (index == 1) {
-            return "#F2B100"
-        } else {
-            return "#FF2D1E"
-        }
-    }
-
 
     return (
         <View style={styles.container}>
             <Modal
                 animationType="fade"
                 transparent={true}
-                visible={modalVisible}
+                visible={categoryModalVisible}
                 onRequestClose={() => {
                     Alert.alert("Modal has been closed.");
-                    setModalVisible(!modalVisible);
+                    setCategoryModalVisible(!categoryModalVisible);
                 }}
             >
                 <View style={styles.centeredView}>
@@ -156,7 +166,28 @@ export default function AddTaskScreen({ route, navigation }) {
                         />}
                         <Pressable
                             style={[styles.button, styles.buttonClose]}
-                            onPress={() => setModalVisible(!modalVisible)}
+                            onPress={() => setCategoryModalVisible(!categoryModalVisible)}
+                        >
+                            <Text style={styles.textStyle}>Hide Modal</Text>
+                        </Pressable>
+                    </View>
+                </View>
+            </Modal>
+            <Modal
+                animationType="fade"
+                transparent={true}
+                visible={rewardModalVisible}
+                onRequestClose={() => {
+                    Alert.alert("Modal has been closed.");
+                    setRewardModalVisible(!rewardModalVisible);
+                }}
+            >
+                <View style={styles.centeredView}>
+                    <View style={styles.modalView}>
+                        <Text style={styles.modalText}>Hello World!</Text>
+                        <Pressable
+                            style={[styles.button, styles.buttonClose]}
+                            onPress={() => setRewardModalVisible(!rewardModalVisible)}
                         >
                             <Text style={styles.textStyle}>Hide Modal</Text>
                         </Pressable>
@@ -174,11 +205,11 @@ export default function AddTaskScreen({ route, navigation }) {
                         <TextInput style={styles.textInput} placeholder={'Write a task'} value={title} onChangeText={text => setTitle(text)} />
                         <Text style={styles.inputHeader}>Category</Text>
                         <ModalDropdown style={styles.dropdown}
-                            options={DEMO_OPTIONS_1}
+                            options={listOfCategories}
                             textStyle={styles.dropdown_text}
                             dropdownStyle={styles.dropdown_dropdown}
-                            onSelect={(idx, value) => dropdown_6_onSelect(idx, value)}
-                            renderRow={dropdown_renderRow.bind(this)}
+                            onSelect={(idx, value) => dropdown_category_onSelect(idx, value)}
+                            renderRow={dropdown_renderDropDownRow.bind(this)}
                             renderButtonText={(rowData) => dropdown_renderButtonText(rowData)}>
                         </ModalDropdown>
                         <View style={{ flexDirection: 'row' }}>
@@ -225,11 +256,11 @@ export default function AddTaskScreen({ route, navigation }) {
                         </View>
                         <Text style={styles.inputHeader}>Reward</Text>
                         <ModalDropdown style={styles.dropdown}
-                            options={REWARD_OPTIONS}
+                            options={listOfRewards}
                             textStyle={styles.dropdown_text}
                             dropdownStyle={styles.dropdown_dropdown}
-                            onSelect={(idx, value) => dropdown_6_onSelect(idx, value)}
-                            renderRow={dropdown_renderRow.bind(this)}
+                            onSelect={(idx, value) => dropdown_reward_onSelect(idx, value)}
+                            renderRow={dropdown_renderDropDownRow.bind(this)}
                             renderButtonText={(rowData) => dropdown_renderButtonText(rowData)}>
                         </ModalDropdown>
                         <Text style={styles.inputHeader}>Notes</Text>
