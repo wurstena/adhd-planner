@@ -1,4 +1,4 @@
-import React, { Component, useState, useEffect } from 'react';
+import React, { Component, useState, useEffect, useRef } from 'react';
 import { Alert, Pressable, Modal, Keyboard, TextInput, ScrollView, Button, View, Text, StyleSheet, KeyboardAvoidingView } from "react-native";
 import { Ionicons } from '@expo/vector-icons';
 import ModalDropdown from 'react-native-modal-dropdown';
@@ -120,6 +120,7 @@ export default function AddTaskScreen({ route, navigation }) {
         );
     }
 
+    const rewardDropdownRef = useRef("rewardDropdown")
     const [value, setValue] = useState(0); // integer state
     const [listOfCategories, setListOfCategories] = useState([])
     const [listOfRewards, setListOfRewards] = useState([])
@@ -206,6 +207,7 @@ export default function AddTaskScreen({ route, navigation }) {
                         <Text style={styles.inputHeader}>Category</Text>
                         <ModalDropdown style={styles.dropdown}
                             options={listOfCategories}
+                            defaultValue="Please Select"
                             textStyle={styles.dropdown_text}
                             dropdownStyle={styles.dropdown_dropdown}
                             onSelect={(idx, value) => dropdown_category_onSelect(idx, value)}
@@ -256,6 +258,7 @@ export default function AddTaskScreen({ route, navigation }) {
                         </View>
                         <Text style={styles.inputHeader}>Reward</Text>
                         <ModalDropdown style={styles.dropdown}
+                            ref={rewardDropdownRef}
                             options={listOfRewards}
                             textStyle={styles.dropdown_text}
                             dropdownStyle={styles.dropdown_dropdown}
