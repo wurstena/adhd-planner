@@ -1,12 +1,11 @@
 import React, { Component, useState, useEffect, useRef } from 'react';
 import { Alert, Pressable, Modal, Keyboard, TextInput, ScrollView, Button, View, Text, StyleSheet, KeyboardAvoidingView } from "react-native";
 import { Ionicons } from '@expo/vector-icons';
-import ModalDropdown from 'react-native-modal-dropdown';
+import ModalDropdown, { select } from 'react-native-modal-dropdown';
 import { Dimensions } from 'react-native';
 import { ColorPicker } from 'react-native-status-color-picker';
 import RadioForm, { RadioButton, RadioButtonInput, RadioButtonLabel } from 'react-native-simple-radio-button';
-import saveTasks, { rewards_list, category_list } from '../storage/saveInput'
-import { State } from 'react-native-gesture-handler';
+import saveTasks, { rewards_list, category_list, saveCategory } from '../storage/saveInput'
 import { useIsFocused } from "@react-navigation/native";
 
 let deviceWidth = Dimensions.get('window').width
@@ -80,6 +79,8 @@ export default function AddTaskScreen({ route, navigation }) {
             setDate(null)
             setTime(null)
             setNotes(null)
+            rewardDropdownRef.current.select(-1)
+            categoryDropdownRef.current.select(-1)
             navigation.navigate(previous, { update: true })
         }
     }
@@ -121,6 +122,7 @@ export default function AddTaskScreen({ route, navigation }) {
     }
 
     const rewardDropdownRef = useRef("rewardDropdown")
+    const categoryDropdownRef = useRef("categoryDropdown")
     const [value, setValue] = useState(0); // integer state
     const [listOfCategories, setListOfCategories] = useState([])
     const [listOfRewards, setListOfRewards] = useState([])
@@ -143,6 +145,7 @@ export default function AddTaskScreen({ route, navigation }) {
     const [time, setTime] = useState(null);
     const [reward, setReward] = useState(null);
     const [notes, setNotes] = useState(null);
+    const [newCategoryTitle, setNewCategoryTitle] = useState(null)
 
     var onSelect = color => selectedColor(color);
 
@@ -159,7 +162,9 @@ export default function AddTaskScreen({ route, navigation }) {
             >
                 <View style={styles.centeredView}>
                     <View style={styles.modalView}>
-                        <Text style={styles.modalText}>Hello World!</Text>
+                        <Text style={styles.modalInputHeader}>New Category Title</Text>
+                        <TextInput style={styles.modalTextInput} value={title} onChangeText={text => setNewCategoryTitle(text)} />
+                        <Text style={styles.modalInputHeader}>Color</Text>
                         {<ColorPicker
                             colors={colors}
                             selectedColor={selectedColor}
@@ -185,7 +190,8 @@ export default function AddTaskScreen({ route, navigation }) {
             >
                 <View style={styles.centeredView}>
                     <View style={styles.modalView}>
-                        <Text style={styles.modalText}>Hello World!</Text>
+                        <Text style={styles.inputHeader}>New Reward</Text>
+                        <TextInput style={styles.textInput} value={title} onChangeText={text => setTitle(text)} />
                         <Pressable
                             style={[styles.button, styles.buttonClose]}
                             onPress={() => setRewardModalVisible(!rewardModalVisible)}
@@ -206,6 +212,7 @@ export default function AddTaskScreen({ route, navigation }) {
                         <TextInput style={styles.textInput} placeholder={'Write a task'} value={title} onChangeText={text => setTitle(text)} />
                         <Text style={styles.inputHeader}>Category</Text>
                         <ModalDropdown style={styles.dropdown}
+                            ref={categoryDropdownRef}
                             options={listOfCategories}
                             defaultValue="Please Select"
                             textStyle={styles.dropdown_text}
@@ -344,6 +351,23 @@ const styles = StyleSheet.create({
         paddingRight: 20,
         marginBottom: 12,
         flex: 1
+    },
+    modalInputHeader: {
+        fontSize: 18,
+        paddingBottom: 10,
+        alignSelf: "flex-start"
+    },
+    modalTextInput: {
+        fontSize: 18,
+        backgroundColor: "white",
+        borderColor: '#d3d3d3',
+        borderTopWidth: 1,
+        borderBottomWidth: 1,
+        borderLeftWidth: 1,
+        borderRightWidth: 1,
+        width: deviceWidth - 120,
+        height: 45,
+        marginBottom: 20
     },
     inputHeader: {
         fontSize: 18,
