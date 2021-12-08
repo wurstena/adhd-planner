@@ -152,7 +152,7 @@ export default function AddTaskScreen({ route, navigation }) {
     return (
         <View style={styles.container}>
             <Modal
-                animationType="fade"
+                // animationType="fade"
                 transparent={true}
                 visible={categoryModalVisible}
                 onRequestClose={() => {
