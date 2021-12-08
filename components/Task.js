@@ -8,6 +8,7 @@ const Task = (props) => {
   function completeTaskAtIndex(index){
     completeTask(index)
     props.setValue(value => value + 1)
+    console.log("in complete task")
   }
 
   return (

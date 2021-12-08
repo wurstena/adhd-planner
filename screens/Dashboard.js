@@ -20,13 +20,18 @@ export default function DashboardScreen({ route, navigation }) {
     });
 
     const [listOfTasks, setListOfTasks] = useState([])
+    const [listOfCompletedTasks, setListOfCompletedTasks] = useState([])
 
     const isFocused = useIsFocused();
     useEffect(() => {
         if (isFocused) {
             setListOfTasks(task_list)
+            setListOfCompletedTasks(completed_task_list)
+            setGraphData([listOfTasks.length,listOfCompletedTasks.length])
+            console.log(listOfCompletedTasks.length, listOfTasks.length)
+            console.log(value)
         }
-    }, [navigation, route, isFocused]);
+    }, [navigation, route, isFocused, value]);
 
     const [value, setValue] = useState(0);
     function showTasks() {
@@ -43,11 +48,11 @@ export default function DashboardScreen({ route, navigation }) {
         );
     }
 
-    const data = [50, 10, 40, 95, -4, -24, 85, 91, 35, 53, -53, 24, 50, -20, -80]
+    const [data, setGraphData] = useState([])
 
     const randomColor = () => ('#' + ((Math.random() * 0xffffff) << 0).toString(16) + '000000').slice(0, 7)
 
-    const pieData = data
+    const pieData = data.length > 0 ? data
         .filter((value) => value > 0)
         .map((value, index) => ({
             value,
@@ -56,7 +61,7 @@ export default function DashboardScreen({ route, navigation }) {
                 onPress: () => console.log('press', index),
             },
             key: `pie-${index}`,
-        }))
+        })) : []
 
     return (
         <View style={styles.container}>
