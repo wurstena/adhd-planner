@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { KeyboardAvoidingView, Button, StyleSheet, Text, View, TextInput, TouchableOpacity, Keyboard, ScrollView } from 'react-native';
 import Task from '../components/Task';
 import { Ionicons } from '@expo/vector-icons';
-import { completeTask, task_list, completed_task_list, getGraphData, getPriorityData } from '../storage/saveInput';
+import { completeTask, task_list, completed_task_list, getGraphData, getPriorityData, getCategories, category_list } from '../storage/saveInput';
 import { useIsFocused } from "@react-navigation/native";
 import { PieChart } from 'react-native-svg-charts'
 
@@ -32,12 +32,16 @@ export default function DashboardScreen({ route, navigation }) {
 
     function showTasks() {
         let priorityTaskList = getPriorityData()
+        let categoryList = getCategories()
         return (
             <View>
                 {
                     priorityTaskList.map((object, index) => {
+                        let category_title = object.category
+                        let category = categoryList.find(item=>item.title==category_title)
+                        let color = (category) ? category.color : "#b8b8b8"
                         return (
-                            <Task text={object.title} key={index} index={index} value={value} setValue={setValue} />
+                            <Task text={object.title} key={index} color={color} index={index} value={value} setValue={setValue} />
                         )
                     })
                 }

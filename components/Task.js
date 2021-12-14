@@ -4,33 +4,44 @@ import { completeTask, task_list, completed_task_list } from '../storage/saveInp
 
 
 const Task = (props) => {
-  function completeTaskAtIndex(index, value){
+  function completeTaskAtIndex(index, value) {
     completeTask(index)
     props.setValue(value => value + 1)
   }
 
   return (
-    <View style={styles.item}>
-      <View style={styles.itemLeft}>
+    <View style={styles(props).item}>
+      <View style={styles(props).itemLeft}>
+        <View style={styles(props).square}></View>
         <TouchableOpacity onPress={() => completeTaskAtIndex(props.index, props.value)}>
-          <View style={styles.square}></View>
+          <View style={styles(props).circular}></View>
         </TouchableOpacity>
-        <Text style={styles.itemText}>{props.text}</Text>
+        <Text style={styles(props).itemText}>{props.text}</Text>
       </View>
-      <View style={styles.circular}></View>
     </View>
   )
 }
 
-const styles = StyleSheet.create({
+const styles = (props) => StyleSheet.create({
   item: {
+    // backgroundColor: '#FFF',
+    // padding: 15,
+    // borderRadius: 10,
+    // flexDirection: 'row',
+    // alignItems: 'center',
+    // justifyContent: 'space-between',
+    // marginBottom: 20,
+    height: 51,
     backgroundColor: '#FFF',
-    padding: 15,
-    borderRadius: 10,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
     marginBottom: 20,
+    shadowColor: '#000',
+    shadowOffset: { width: 2, height: 3 },
+    shadowOpacity: 0.2,
+    shadowRadius: 4,
+    elevation: 5,
   },
   itemLeft: {
     flexDirection: 'row',
@@ -38,22 +49,21 @@ const styles = StyleSheet.create({
     flexWrap: 'wrap'
   },
   square: {
-    width: 24,
-    height: 24,
-    backgroundColor: '#55BCF6',
-    opacity: 0.4,
-    borderRadius: 5,
-    marginRight: 15,
+    width: 19,
+    height: 51,
+    backgroundColor: props.color ? props.color : "#8b8b8b",
+    marginRight: 10,
   },
   itemText: {
     maxWidth: '80%',
   },
   circular: {
-    width: 12,
-    height: 12,
-    borderColor: '#55BCF6',
-    borderWidth: 2,
-    borderRadius: 5,
+    width: 27,
+    height: 27,
+    borderColor: '#8b8b8b',
+    borderWidth: 1,
+    borderRadius: 24,
+    marginRight: 15,
   },
 });
 

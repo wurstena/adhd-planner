@@ -2,7 +2,7 @@ import React, { Component, useState, useEffect, useRef } from 'react';
 import { Alert, Pressable, Modal, Keyboard, TextInput, ScrollView, Button, View, Text, StyleSheet, KeyboardAvoidingView } from "react-native";
 import { Ionicons } from '@expo/vector-icons';
 import ModalDropdown, { select } from 'react-native-modal-dropdown';
-import { Dimensions } from 'react-native';
+import { Dimensions, TouchableWithoutFeedback } from 'react-native';
 import { ColorPicker } from 'react-native-status-color-picker';
 import RadioForm, { RadioButton, RadioButtonInput, RadioButtonLabel } from 'react-native-simple-radio-button';
 import saveTasks, { rewards_list, category_list, saveCategory, getCategories, getRewards } from '../storage/saveInput'
@@ -124,9 +124,9 @@ export default function AddTaskScreen({ route, navigation }) {
     const rewardDropdownRef = useRef("rewardDropdown")
     const categoryDropdownRef = useRef("categoryDropdown")
     const [value, setValue] = useState(0); // integer state
-    // const [listOfCategories, setListOfCategories] = useState([])
+    const [listOfCategories, setListOfCategories] = useState(getCategories().concat(ADD_CATEGORY_OPTION))
     // const [listOfRewards, setListOfRewards] = useState([])
-    let listOfCategories = getCategories();
+    // let listOfCategories = getCategories().concat(ADD_CATEGORY_OPTION);
     let listOfRewards = getRewards();
     // const isFocused = useIsFocused();
     // useEffect(() => {
@@ -151,6 +151,29 @@ export default function AddTaskScreen({ route, navigation }) {
 
     var onSelect = color => selectedColor(color);
 
+    var addedNewCategory = false;
+
+    function saveCategoryModal() {
+        setCategoryModalVisible(!categoryModalVisible)
+        let categoryItem = {
+            title: newCategoryTitle,
+            color: colors,
+            color_icon: true
+        }
+        saveCategory(categoryItem)
+        setNewCategoryTitle(null)
+        selectedColor(["#F44336", "#E91E63", "#9C27B0", "#673AB7", "#3F51B5", "#2196F3", "#03A9F4", "#00BCD4", "#009688", "#4CAF50", "#8BC34A", "#CDDC39", "#FFEB3B", "#FFC107", "#FF9800", "#FF5722", "#795548", "#9E9E9E", "#607D8B"], '#F44336')
+        let list = getCategories().concat(ADD_CATEGORY_OPTION)
+        console.log(list)
+        setListOfCategories(list)
+        console.log(listOfCategories)
+        addedNewCategory = true;
+    }
+
+    useEffect(() => {
+        categoryDropdownRef.current.select(listOfCategories.length - 2)
+    }, [listOfCategories])
+
     return (
         <View style={styles.container}>
             <Modal
@@ -165,7 +188,7 @@ export default function AddTaskScreen({ route, navigation }) {
                 <View style={styles.centeredView}>
                     <View style={styles.modalView}>
                         <Text style={styles.modalInputHeader}>New Category Title</Text>
-                        <TextInput style={styles.modalTextInput} value={title} onChangeText={text => setNewCategoryTitle(text)} />
+                        <TextInput style={styles.modalTextInput} value={newCategoryTitle} onChangeText={text => setNewCategoryTitle(text)} />
                         <Text style={styles.modalInputHeader}>Color</Text>
                         {<ColorPicker
                             colors={colors}
@@ -174,9 +197,12 @@ export default function AddTaskScreen({ route, navigation }) {
                         />}
                         <Pressable
                             style={[styles.button, styles.buttonClose]}
-                            onPress={() => setCategoryModalVisible(!categoryModalVisible)}
+                            // onPress={() => setCategoryModalVisible(!categoryModalVisible)}
+                            onPress={() => {
+                                saveCategoryModal()
+                            }}
                         >
-                            <Text style={styles.textStyle}>Hide Modal</Text>
+                            <Text style={styles.textStyle}>Save Category</Text>
                         </Pressable>
                     </View>
                 </View>
@@ -215,7 +241,7 @@ export default function AddTaskScreen({ route, navigation }) {
                         <Text style={styles.inputHeader}>Category</Text>
                         <ModalDropdown style={styles.dropdown}
                             ref={categoryDropdownRef}
-                            options={listOfCategories}
+                            options={getCategories().concat(ADD_CATEGORY_OPTION)}
                             defaultValue="Please Select"
                             textStyle={styles.dropdown_text}
                             dropdownStyle={styles.dropdown_dropdown}
