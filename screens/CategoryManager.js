@@ -2,21 +2,21 @@ import React, { useState, useEffect } from 'react';
 import { KeyboardAvoidingView, Button, StyleSheet, Text, View, TextInput, TouchableOpacity, Keyboard, ScrollView } from 'react-native';
 import Category from '../components/Category';
 import { Ionicons } from '@expo/vector-icons';
-import { completeTask, category_list, completed_task_list } from '../storage/saveInput';
+import { completeTask, category_list, getCategories } from '../storage/saveInput';
 import { useIsFocused } from "@react-navigation/native";
 
 export default function CategoryManagerScreen({ navigation, route }) {
   const [value, setValue] = useState(0); // integer state
-  const [listOfCategories, setListOfCategories] = useState([])
-  const isFocused = useIsFocused();
-  useEffect(() => {
-    if (isFocused) {
-      setListOfCategories(category_list)
-    }
-  }, [navigation, route, category_list, isFocused]);
+  // const [listOfCategories, setListOfCategories] = useState([])
+  let listOfCategories = getCategories();
+  // const isFocused = useIsFocused();
+  // useEffect(() => {
+  //   if (isFocused) {
+  //   }
+  // }, [navigation, route, isFocused]);
 
   function showCategory(index) {
-    setValue(value => value + 1)
+    // setValue(value => value + 1)
     navigation.navigate("View Category", { previous: "Category Manager", index: {index} })
   }
 

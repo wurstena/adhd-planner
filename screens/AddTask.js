@@ -5,7 +5,7 @@ import ModalDropdown, { select } from 'react-native-modal-dropdown';
 import { Dimensions } from 'react-native';
 import { ColorPicker } from 'react-native-status-color-picker';
 import RadioForm, { RadioButton, RadioButtonInput, RadioButtonLabel } from 'react-native-simple-radio-button';
-import saveTasks, { rewards_list, category_list, saveCategory } from '../storage/saveInput'
+import saveTasks, { rewards_list, category_list, saveCategory, getCategories, getRewards } from '../storage/saveInput'
 import { useIsFocused } from "@react-navigation/native";
 
 let deviceWidth = Dimensions.get('window').width
@@ -124,15 +124,17 @@ export default function AddTaskScreen({ route, navigation }) {
     const rewardDropdownRef = useRef("rewardDropdown")
     const categoryDropdownRef = useRef("categoryDropdown")
     const [value, setValue] = useState(0); // integer state
-    const [listOfCategories, setListOfCategories] = useState([])
-    const [listOfRewards, setListOfRewards] = useState([])
-    const isFocused = useIsFocused();
-    useEffect(() => {
-        if (isFocused) {
-            setListOfCategories(category_list.concat(ADD_CATEGORY_OPTION))
-            setListOfRewards(rewards_list.concat(ADD_REWARD_OPTION))
-        }
-    }, [navigation, route, category_list, isFocused]);
+    // const [listOfCategories, setListOfCategories] = useState([])
+    // const [listOfRewards, setListOfRewards] = useState([])
+    let listOfCategories = getCategories();
+    let listOfRewards = getRewards();
+    // const isFocused = useIsFocused();
+    // useEffect(() => {
+    //     if (isFocused) {
+    //         setListOfCategories(category_list.concat(ADD_CATEGORY_OPTION))
+    //         setListOfRewards(rewards_list.concat(ADD_REWARD_OPTION))
+    //     }
+    // }, [navigation, route, category_list, isFocused]);
 
     const [categoryModalVisible, setCategoryModalVisible] = useState(false);
     const [rewardModalVisible, setRewardModalVisible] = useState(false);

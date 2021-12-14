@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { KeyboardAvoidingView, Button, StyleSheet, Text, View, TextInput, TouchableOpacity, Keyboard, ScrollView } from 'react-native';
 import Task from '../components/Task';
 import { Ionicons } from '@expo/vector-icons';
-import { completeTask, task_list, completed_task_list } from '../storage/saveInput';
+import { completeTask, task_list, completed_task_list, getGraphData, getPriorityData } from '../storage/saveInput';
 import { useIsFocused } from "@react-navigation/native";
 import { PieChart } from 'react-native-svg-charts'
 
@@ -19,28 +19,25 @@ export default function DashboardScreen({ route, navigation }) {
         ),
     });
 
-    const [listOfTasks, setListOfTasks] = useState([])
-    const [listOfCompletedTasks, setListOfCompletedTasks] = useState([])
+    // const [listOfTasks, setListOfTasks] = useState([])
+    // const [listOfCompletedTasks, setListOfCompletedTasks] = useState([])
 
     const isFocused = useIsFocused();
     useEffect(() => {
         if (isFocused) {
-            setListOfTasks(task_list)
-            setListOfCompletedTasks(completed_task_list)
-            setGraphData([listOfTasks.length,listOfCompletedTasks.length])
-            console.log(listOfCompletedTasks.length, listOfTasks.length)
-            console.log(value)
         }
-    }, [navigation, route, isFocused, value]);
+    }, [navigation, route, isFocused]);
 
-    const [value, setValue] = useState(0);
+    const [value, setValue] = useState(false)
+
     function showTasks() {
+        let priorityTaskList = getPriorityData()
         return (
             <View>
                 {
-                    listOfTasks.map((object, index) => {
+                    priorityTaskList.map((object, index) => {
                         return (
-                            <Task text={object.title} index={index} value={value} setValue={setValue} />
+                            <Task text={object.title} key={index} index={index} value={value} setValue={setValue} />
                         )
                     })
                 }
@@ -48,20 +45,26 @@ export default function DashboardScreen({ route, navigation }) {
         );
     }
 
-    const [data, setGraphData] = useState([])
+    function showPieChart() {
+        data_stuff = getGraphData();
+        const pieData = (data_stuff && data_stuff.length > 0) ? data_stuff
+            .filter((value) => value > 0)
+            .map((value, index) => ({
+                value,
+                svg: {
+                    fill: randomColor(index),
+                    onPress: () => console.log('press', index),
+                },
+                key: `pie-${index}`,
+            })) : []
+        return (
+            <View>
+                <PieChart style={styles.PieChart} data={pieData} />
+            </View>
+        );
+    }
 
-    const randomColor = () => ('#' + ((Math.random() * 0xffffff) << 0).toString(16) + '000000').slice(0, 7)
-
-    const pieData = data.length > 0 ? data
-        .filter((value) => value > 0)
-        .map((value, index) => ({
-            value,
-            svg: {
-                fill: randomColor(),
-                onPress: () => console.log('press', index),
-            },
-            key: `pie-${index}`,
-        })) : []
+    const randomColor = (index) => (index == 1 ? "red" : index == 2 ? "green": "blue")
 
     return (
         <View style={styles.container}>
@@ -82,15 +85,21 @@ export default function DashboardScreen({ route, navigation }) {
                         }
                     </View>
                 </View>
-
-                <PieChart style={{ height: 200 }} data={pieData} />
-
             </ScrollView>
+
+            <View>
+                {showPieChart()}
+            </View>
+
         </View>
     );
 }
 
 const styles = StyleSheet.create({
+    PieChart: {
+        height: 200,
+        marginBottom: 50
+    },
     graphContainer: {
         // alignSelf: "center",
         alignItems: "center",

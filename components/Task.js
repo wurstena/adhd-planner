@@ -4,17 +4,15 @@ import { completeTask, task_list, completed_task_list } from '../storage/saveInp
 
 
 const Task = (props) => {
-  // const [value, setValue] = useState(0); // integer state
-  function completeTaskAtIndex(index){
+  function completeTaskAtIndex(index, value){
     completeTask(index)
     props.setValue(value => value + 1)
-    console.log("in complete task")
   }
 
   return (
     <View style={styles.item}>
       <View style={styles.itemLeft}>
-        <TouchableOpacity onPress={() => completeTaskAtIndex(props.index)}>
+        <TouchableOpacity onPress={() => completeTaskAtIndex(props.index, props.value)}>
           <View style={styles.square}></View>
         </TouchableOpacity>
         <Text style={styles.itemText}>{props.text}</Text>

@@ -4,6 +4,8 @@ var rewards = [];
 var categories = [];
 
 export default function saveTasks(task) {
+  let index = tasks.length
+  task.key = index
   tasks.push(task)
 }
 
@@ -31,6 +33,30 @@ export function saveReward(reward) {
 
 export function deleteReward(index) {
   rewards.splice(index, 1)
+}
+
+export function getGraphData() {
+  return [tasks.length, completedTasks.length]
+}
+
+export function getPriorityData() {
+  return tasks.slice(0,3)
+}
+
+export function getTasksData() {
+  return tasks
+}
+
+export function getCompletedTaskData() {
+  return completedTasks
+}
+
+export function getRewards() {
+  return rewards
+}
+
+export function getCategories() {
+  return categories
 }
 
 export { rewards as rewards_list }

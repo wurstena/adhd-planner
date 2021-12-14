@@ -3,7 +3,7 @@ import { Alert, Keyboard, TextInput, ScrollView, Button, View, Text, StyleSheet,
 import { Ionicons } from '@expo/vector-icons';
 import { Dimensions } from 'react-native';
 import { ColorPicker } from 'react-native-status-color-picker';
-import { saveCategory, category_list } from '../storage/saveInput'
+import { saveCategory, getCategories } from '../storage/saveInput'
 import { useIsFocused } from "@react-navigation/native";
 
 
@@ -29,14 +29,16 @@ export default function ViewCategoryScreen({ route, navigation }) {
     });
 
     const [value, setValue] = useState(0); // integer state
-    const [listOfCategories, setListOfCategories] = useState([])
+    // const [listOfCategories, setListOfCategories] = useState([])
 
-    const isFocused = useIsFocused();
-    useEffect(() => {
-        if (isFocused) {
-            setListOfCategories(category_list)
-        }
-    }, [navigation, route, category_list, isFocused]);
+    let listOfCategories = getCategories();
+
+    // const isFocused = useIsFocused();
+    // useEffect(() => {
+    //     if (isFocused) {
+    //         // setListOfCategories(category_list)
+    //     }
+    // }, [navigation, route, isFocused]);
 
     return (
         <View style={styles(null).container}>

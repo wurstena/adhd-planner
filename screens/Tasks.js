@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { KeyboardAvoidingView, Button, StyleSheet, Text, View, TextInput, TouchableOpacity, Keyboard, ScrollView } from 'react-native';
 import Task from '../components/Task';
 import { Ionicons } from '@expo/vector-icons';
-import { completeTask, task_list, completed_task_list } from '../storage/saveInput';
+import { completeTask, task_list, completed_task_list, getTasksData } from '../storage/saveInput';
 import { useIsFocused } from "@react-navigation/native";
 
 export default function TasksScreen({ route, navigation }) {
@@ -20,13 +20,14 @@ export default function TasksScreen({ route, navigation }) {
     ),
   });
 
-  const [listOfTasks, setListOfTasks] = useState([])
-  const isFocused = useIsFocused();
-  useEffect(() => {
-    if (isFocused) {
-      setListOfTasks(task_list)
-    }
-  }, [navigation, route, task_list, value, isFocused]);
+  // const [listOfTasks, setListOfTasks] = useState([])
+  // const isFocused = useIsFocused();
+  // useEffect(() => {
+  //   if (isFocused) {
+  //     setListOfTasks(task_list)
+  //   }
+  // }, [navigation, route, task_list, value, isFocused]);
+  let listOfTasks = getTasksData()
 
   function showTasks() {
     return (
@@ -35,7 +36,7 @@ export default function TasksScreen({ route, navigation }) {
           listOfTasks.map((object, index) => {
             return (
               // <TouchableOpacity key={index} onPress={() => completeTaskAtIndex(index)}>
-              <Task text={object.title} index={index} value={value} setValue={setValue} />
+              <Task text={object.title} key={index} index={index} value={value} setValue={setValue} />
               // </TouchableOpacity>
             )
           })
