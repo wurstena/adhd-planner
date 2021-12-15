@@ -5,7 +5,7 @@ import ModalDropdown, { select } from 'react-native-modal-dropdown';
 import { Dimensions, TouchableWithoutFeedback } from 'react-native';
 import { ColorPicker } from 'react-native-status-color-picker';
 import RadioForm, { RadioButton, RadioButtonInput, RadioButtonLabel } from 'react-native-simple-radio-button';
-import saveTasks, { rewards_list, category_list, saveCategory, getCategories, getRewards } from '../storage/saveInput'
+import saveTasks, { rewards_list, category_list, saveCategory, saveReward, getCategories, getRewards } from '../storage/saveInput'
 import { useIsFocused } from "@react-navigation/native";
 
 let deviceWidth = Dimensions.get('window').width
@@ -28,7 +28,8 @@ export default function AddTaskScreen({ route, navigation }) {
     navigation.setOptions({
         headerLeft: () => (
             <Ionicons.Button
-                onPress={() => navigation.navigate(previous, { update: false })}
+                // onPress={() => navigation.navigate(previous, { update: false })}
+                onPress={() => clearVariablesAndNavigate(previous)}
                 color="#707070"
                 backgroundColor="#f8f8f8"
                 name="close"
@@ -42,6 +43,18 @@ export default function AddTaskScreen({ route, navigation }) {
             />
         )
     });
+
+    function clearVariablesAndNavigate(previous) {
+        setTitle(null)
+        setCategoryLabel(null)
+        setReward(null)
+        setDate(null)
+        setTime(null)
+        setNotes(null)
+        rewardDropdownRef.current.select(-1)
+        categoryDropdownRef.current.select(-1)
+        navigation.navigate(previous, { update: false })
+    }
 
     function createAlert(message) {
         Alert.alert(
@@ -125,9 +138,10 @@ export default function AddTaskScreen({ route, navigation }) {
     const categoryDropdownRef = useRef("categoryDropdown")
     const [value, setValue] = useState(0); // integer state
     const [listOfCategories, setListOfCategories] = useState(getCategories().concat(ADD_CATEGORY_OPTION))
+    const [listOfRewards, setListOfRewards] = useState(getRewards().concat(ADD_REWARD_OPTION))
     // const [listOfRewards, setListOfRewards] = useState([])
     // let listOfCategories = getCategories().concat(ADD_CATEGORY_OPTION);
-    let listOfRewards = getRewards();
+    // let listOfRewards = getRewards();
     // const isFocused = useIsFocused();
     // useEffect(() => {
     //     if (isFocused) {
@@ -148,10 +162,14 @@ export default function AddTaskScreen({ route, navigation }) {
     const [reward, setReward] = useState(null);
     const [notes, setNotes] = useState(null);
     const [newCategoryTitle, setNewCategoryTitle] = useState(null)
+    const [newRewardTitle, setNewRewardTitle] = useState(null)
 
     var onSelect = color => selectedColor(color);
 
-    var addedNewCategory = false;
+    const [addedNewCategory, setAddedNewCategory] = useState(false)
+    const [addedNewReward, setAddedNewReward] = useState(false)
+    // var addedNewCategory = false;
+    // var addedNewReward = false;
 
     function saveCategoryModal() {
         setCategoryModalVisible(!categoryModalVisible)
@@ -164,15 +182,39 @@ export default function AddTaskScreen({ route, navigation }) {
         setNewCategoryTitle(null)
         selectedColor(["#F44336", "#E91E63", "#9C27B0", "#673AB7", "#3F51B5", "#2196F3", "#03A9F4", "#00BCD4", "#009688", "#4CAF50", "#8BC34A", "#CDDC39", "#FFEB3B", "#FFC107", "#FF9800", "#FF5722", "#795548", "#9E9E9E", "#607D8B"], '#F44336')
         let list = getCategories().concat(ADD_CATEGORY_OPTION)
-        console.log(list)
         setListOfCategories(list)
-        console.log(listOfCategories)
-        addedNewCategory = true;
+        setAddedNewCategory(true);
+    }
+
+    function saveRewardModal() {
+        setRewardModalVisible(!rewardModalVisible)
+        let rewardItem = {
+            title: newRewardTitle
+        }
+        saveReward(rewardItem)
+        setNewRewardTitle(null)
+        let list = getRewards().concat(ADD_REWARD_OPTION)
+        setListOfRewards(list)
+        setAddedNewReward(true);
     }
 
     useEffect(() => {
-        categoryDropdownRef.current.select(listOfCategories.length - 2)
+        if (addedNewCategory) {
+            categoryDropdownRef.current.select(listOfCategories.length - 2)
+            let cat = listOfCategories[listOfCategories.length - 2]
+            setCategoryLabel(cat.title)
+            setAddedNewCategory(false)
+        }
     }, [listOfCategories])
+
+    useEffect(() => {
+        if (addedNewReward) {
+            rewardDropdownRef.current.select(listOfRewards.length - 2)
+            let rew = listOfRewards[listOfRewards.length - 2]
+            setReward(rew.title)
+            setAddedNewReward(false)
+        }
+    }, [listOfRewards])
 
     return (
         <View style={styles.container}>
@@ -219,12 +261,14 @@ export default function AddTaskScreen({ route, navigation }) {
                 <View style={styles.centeredView}>
                     <View style={styles.modalView}>
                         <Text style={styles.inputHeader}>New Reward</Text>
-                        <TextInput style={styles.textInput} value={title} onChangeText={text => setTitle(text)} />
+                        <TextInput style={styles.modalTextInput} value={newRewardTitle} onChangeText={text => setNewRewardTitle(text)} />
                         <Pressable
                             style={[styles.button, styles.buttonClose]}
-                            onPress={() => setRewardModalVisible(!rewardModalVisible)}
+                            onPress={() => {
+                                saveRewardModal()
+                            }}
                         >
-                            <Text style={styles.textStyle}>Hide Modal</Text>
+                            <Text style={styles.textStyle}>Save Reward</Text>
                         </Pressable>
                     </View>
                 </View>

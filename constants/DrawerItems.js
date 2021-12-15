@@ -15,10 +15,6 @@ export default [
         component: TasksScreen
     },
     {
-        name:'Calendar',
-        component: CalendarScreen
-    },
-    {
         name:'Category Manager',
         component: CategoryManagerScreen
     },

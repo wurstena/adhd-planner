@@ -58,7 +58,7 @@ export default function TasksScreen({ route, navigation }) {
 
         {/* Today's Tasks */}
         <View style={styles.tasksWrapper}>
-          <Text style={styles.sectionTitle}>Today's tasks</Text>
+          {/* <Text style={styles.sectionTitle}>Today's tasks</Text> */}
           <View style={styles.items}>
             {
               showTasks()
