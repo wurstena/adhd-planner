@@ -30,6 +30,10 @@ export default function DashboardScreen({ route, navigation }) {
 
     const [value, setValue] = useState(false)
 
+    function showTask(index) {
+        navigation.navigate("View Task", { previous: "Dashboard", index: { index } })
+    }
+
     function showTasks() {
         let priorityTaskList = getPriorityData()
         let categoryList = getCategories()
@@ -38,10 +42,12 @@ export default function DashboardScreen({ route, navigation }) {
                 {
                     priorityTaskList.map((object, index) => {
                         let category_title = object.category
-                        let category = categoryList.find(item=>item.title==category_title)
+                        let category = categoryList.find(item => item.title == category_title)
                         let color = (category) ? category.color : "#b8b8b8"
                         return (
-                            <Task text={object.title} key={index} color={color} index={index} value={value} setValue={setValue} />
+                            <TouchableOpacity onPress={() => showTask(index)}>
+                                <Task text={object.title} key={index} color={color} index={index} value={value} setValue={setValue} />
+                            </TouchableOpacity>
                         )
                     })
                 }
@@ -68,7 +74,7 @@ export default function DashboardScreen({ route, navigation }) {
         );
     }
 
-    const randomColor = (index) => (index == 1 ? "red" : index == 2 ? "green": "blue")
+    const randomColor = (index) => (index == 1 ? "red" : index == 2 ? "green" : "blue")
 
     return (
         <View style={styles.container}>
