@@ -49,6 +49,7 @@ export default function ViewCategoryScreen({ route, navigation }) {
                     <Text style={styles(null).sectionHeader}>Color</Text>
                     <View style={styles(listOfCategories[0].color).circular}></View>
                     <Text style={styles(null).sectionHeader}>Notes</Text>
+                    <Text style={styles(null).sectionContent}>{listOfCategories[index].notes}</Text>
                 </View>
             </ScrollView >
         </View >

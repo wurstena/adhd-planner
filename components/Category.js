@@ -3,7 +3,7 @@ import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { completeTask, task_list, completed_task_list } from '../storage/saveInput';
 import { Ionicons } from '@expo/vector-icons';
 
-const Task = (props) => {
+const Category = (props) => {
     return (
         <View style={styles(props).container}>
             {/* <TouchableOpacity onPress={() => showCategory(props.index)}> */}
@@ -55,4 +55,4 @@ const styles = (props) => StyleSheet.create({
     },
 });
 
-export default Task;
+export default Category;

@@ -1,12 +1,15 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Alert, Keyboard, TextInput, ScrollView, Button, View, Text, StyleSheet, KeyboardAvoidingView } from "react-native";
 import { Ionicons } from '@expo/vector-icons';
 import { Dimensions } from 'react-native';
 import { ColorPicker } from 'react-native-status-color-picker';
-import { saveCategory } from '../storage/saveInput'
+import { saveCategory, getCategories, getRewards } from '../storage/saveInput'
+import { useIsFocused } from "@react-navigation/native";
 
-export default function AddCategoryScreen({ route, navigation }) {
-    let previous = route.params.previous
+
+export default function ViewRewardScreen({ route, navigation }) {
+    const previous = route.params.previous
+    const index = route.params.index.index
     navigation.setOptions({
         headerLeft: () => (
             <Ionicons.Button
@@ -17,83 +20,50 @@ export default function AddCategoryScreen({ route, navigation }) {
                 size="30"
             />
         ),
-        headerRight: () => (
-            <Button
-                title="Save"
-                onPress={() => { handleSave() }}
-            />
-        )
+        // headerRight: () => (
+        //     <Button
+        //         title="Save"
+        //         onPress={() => { handleSave() }}
+        //     />
+        // )
     });
 
-    function createAlert(message) {
-        Alert.alert(
-            "Error",
-            message,
-            [
-                { text: "OK", onPress: () => console.log("OK Pressed"), style: "cancel" }
-            ]
-        );
-    }
+    const [value, setValue] = useState(0); // integer state
+    // const [listOfCategories, setListOfCategories] = useState([])
 
-    function handleSave() {
-        if (title == null || title === "") {
-            return createAlert("You must add a title before saving")
-        } else {
-            let categoryItem = {
-                title: title,
-                color: color,
-                color_icon: true,
-                notes: notes
-            }
-            saveCategory(categoryItem)
-            setTitle(null)
-            setNotes(null)
-            navigation.navigate(previous, { update: true })
-        }
-    }
+    let listOfRewards = getRewards();
 
-    const [colors, setColorList] = useState(["#F44336", "#E91E63", "#9C27B0", "#673AB7", "#3F51B5", "#2196F3", "#03A9F4", "#00BCD4", "#009688", "#4CAF50", "#8BC34A", "#CDDC39", "#FFEB3B", "#FFC107", "#FF9800", "#FF5722", "#795548", "#9E9E9E", "#607D8B"], '#F44336')
-    const [title, setTitle] = useState(null);
-    const [notes, setNotes] = useState(null);
-    const [color, setColor] = useState(null);
-
-
-    var onSelect = (new_color) => setColor(new_color);
+    // const isFocused = useIsFocused();
+    // useEffect(() => {
+    //     if (isFocused) {
+    //         // setListOfCategories(category_list)
+    //     }
+    // }, [navigation, route, isFocused]);
 
     return (
-        <View style={styles.container}>
-            <KeyboardAvoidingView style={{ flex: 1, flexDirection: 'column', justifyContent: 'center' }}
-                behavior={Platform.OS == "ios" ? "padding" : "height"}
-                keyboardVerticalOffset={100}
-                enabled
-            >
-                <ScrollView>
-                    <View style={styles.inputContainer}>
-                        <Text style={styles.inputHeader}>Title</Text>
-                        <TextInput style={styles.textInput} value={title} onChangeText={text => setTitle(text)} />
-                        <Text style={styles.inputHeader}>Color</Text>
-                        <ColorPicker
-                            colors={colors}
-                            selectedColor={color}
-                            onSelect={onSelect}
-                        />
-                        <Text style={styles.inputHeader}>Notes</Text>
-                        <TextInput
-                            style={styles.textInput}
-                            multiline={true}
-                            maxLength={20}
-                            onBlur={Keyboard.dismiss}
-                            value={notes}
-                            onChangeText={(text) => setNotes(text)}
-                        />
-                    </View>
-                </ScrollView >
-            </KeyboardAvoidingView>
+        <View style={styles(null).container}>
+            <ScrollView>
+                <View style={styles(null).inputContainer}>
+                    <Text style={styles(null).sectionHeader}>Title</Text>
+                    <Text style={styles(null).sectionContent}>{listOfRewards[index].title}</Text>
+                    <Text style={styles(null).sectionHeader}>Notes</Text>
+                    <Text style={styles(null).sectionContent}>{listOfRewards[index].notes}</Text>
+                </View>
+            </ScrollView >
         </View >
     );
 }
 
-const styles = StyleSheet.create({
+const styles = (color) => StyleSheet.create({
+    circular: {
+        width: 50,
+        height: 50,
+        backgroundColor: color,
+        // borderColor: "#F8F8F8",
+        // borderWidth: 2,
+        borderRadius: 30,
+        marginBottom: 15
+    },
     container: {
         flex: 1,
         backgroundColor: '#F8F8F8',
@@ -156,9 +126,14 @@ const styles = StyleSheet.create({
         marginBottom: 12,
         flex: 1
     },
-    inputHeader: {
+    sectionHeader: {
         fontSize: 18,
         paddingBottom: 5
+    },
+    sectionContent: {
+        fontSize: 18,
+        paddingBottom: 15,
+        fontWeight: "bold"
     },
     centeredView: {
         flex: 1,

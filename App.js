@@ -8,6 +8,8 @@ import AddTaskScreen from './screens/AddTask';
 import ViewTaskScreen from './screens/ViewTask';
 import AddCategoryScreen from './screens/AddCategory';
 import ViewCategoryScreen from './screens/ViewCategory';
+import ViewRewardScreen from './screens/ViewReward';
+import AddRewardScreen from './screens/AddReward';
 
 const Stack = createNativeStackNavigator();
 const Drawer = createDrawerNavigator();
@@ -92,9 +94,43 @@ function App() {
           })}
         />
         <Stack.Screen
+          name="Add a Reward"
+          key='Add a Reward'
+          component={AddRewardScreen}
+          options={({ navigation, route }) => ({
+            headerTitle: props => <Text {...props} />,
+            fontSize: 30,
+            headerStyle: { height: 80, backgroundColor: "#F8F8F8" },
+            headerTitleStyle: {
+              fontSize: 24,
+              color: '#4b4b4b'
+            },
+            drawerLabel: () => null,
+            drawerIcon: () => null,
+            headerLeft: () => null
+          })}
+        />
+        <Stack.Screen
           name="View Category"
           key='View Category'
           component={ViewCategoryScreen}
+          options={({ navigation, route }) => ({
+            headerTitle: props => <Text {...props} />,
+            fontSize: 30,
+            headerStyle: { height: 80, backgroundColor: "#F8F8F8" },
+            headerTitleStyle: {
+              fontSize: 24,
+              color: '#4b4b4b'
+            },
+            drawerLabel: () => null,
+            drawerIcon: () => null,
+            headerLeft: () => null
+          })}
+        />
+        <Stack.Screen
+          name="View Reward"
+          key='View Reward'
+          component={ViewRewardScreen}
           options={({ navigation, route }) => ({
             headerTitle: props => <Text {...props} />,
             fontSize: 30,

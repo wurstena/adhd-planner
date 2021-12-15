@@ -3,9 +3,9 @@ import { Alert, Keyboard, TextInput, ScrollView, Button, View, Text, StyleSheet,
 import { Ionicons } from '@expo/vector-icons';
 import { Dimensions } from 'react-native';
 import { ColorPicker } from 'react-native-status-color-picker';
-import { saveCategory } from '../storage/saveInput'
+import { saveCategory, saveReward } from '../storage/saveInput'
 
-export default function AddCategoryScreen({ route, navigation }) {
+export default function AddRewardScreen({ route, navigation }) {
     let previous = route.params.previous
     navigation.setOptions({
         headerLeft: () => (
@@ -39,26 +39,19 @@ export default function AddCategoryScreen({ route, navigation }) {
         if (title == null || title === "") {
             return createAlert("You must add a title before saving")
         } else {
-            let categoryItem = {
+            let rewardItem = {
                 title: title,
-                color: color,
-                color_icon: true,
                 notes: notes
             }
-            saveCategory(categoryItem)
+            saveReward(rewardItem)
             setTitle(null)
             setNotes(null)
             navigation.navigate(previous, { update: true })
         }
     }
 
-    const [colors, setColorList] = useState(["#F44336", "#E91E63", "#9C27B0", "#673AB7", "#3F51B5", "#2196F3", "#03A9F4", "#00BCD4", "#009688", "#4CAF50", "#8BC34A", "#CDDC39", "#FFEB3B", "#FFC107", "#FF9800", "#FF5722", "#795548", "#9E9E9E", "#607D8B"], '#F44336')
     const [title, setTitle] = useState(null);
     const [notes, setNotes] = useState(null);
-    const [color, setColor] = useState(null);
-
-
-    var onSelect = (new_color) => setColor(new_color);
 
     return (
         <View style={styles.container}>
@@ -71,12 +64,6 @@ export default function AddCategoryScreen({ route, navigation }) {
                     <View style={styles.inputContainer}>
                         <Text style={styles.inputHeader}>Title</Text>
                         <TextInput style={styles.textInput} value={title} onChangeText={text => setTitle(text)} />
-                        <Text style={styles.inputHeader}>Color</Text>
-                        <ColorPicker
-                            colors={colors}
-                            selectedColor={color}
-                            onSelect={onSelect}
-                        />
                         <Text style={styles.inputHeader}>Notes</Text>
                         <TextInput
                             style={styles.textInput}
