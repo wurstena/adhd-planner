@@ -40,12 +40,69 @@ export default function ViewTaskScreen({ route, navigation }) {
     //     }
     // }, [navigation, route, isFocused]);
 
+    /*
+    title: title,
+                category: category_label,
+                reward: reward,
+                date: date,
+                time: time,
+                priority: priority,
+                notes: notes
+    */
     return (
         <View style={styles(null).container}>
             <ScrollView>
                 <View style={styles(null).inputContainer}>
                     <Text style={styles(null).sectionHeader}>Title</Text>
                     <Text style={styles(null).sectionContent}>{listOfTasks[index].title}</Text>
+                    <Text style={styles(null).sectionHeader}>Category</Text>
+                    <Text style={styles(null).sectionContent}>{listOfTasks[index].category}</Text>
+                    <View style={{ flexDirection: "row" }}>
+                        <View style={{
+                            flexDirection: 'column',
+                            width: (Dimensions.get('screen').width / 2 - 25),
+                            marginRight: 5
+                        }}>
+                            <Text style={styles(null).sectionHeader}>Due Date</Text>
+                            <Text style={styles(null).sectionContent}>{listOfTasks[index].date}</Text>
+                        </View>
+                        <View style={{
+                            flexDirection: 'column',
+                            width: (Dimensions.get('screen').width / 2 - 25),
+                            marginRight: 5
+                        }}>
+                            <Text style={styles(null).sectionHeader}>Due Time</Text>
+                            <Text style={styles(null).sectionContent}>{listOfTasks[index].time}</Text>
+                        </View>
+                    </View>
+                    <View style={{ flexDirection: "row", alignItems: "center", marginBottom: 15}}>
+                        <Text style={styles(null).sectionHeader}>Priority</Text>
+                        <View style={{
+                            borderWidth: 1,
+                            borderRadius: 50,
+                            paddingLeft: 10,
+                            paddingRight: 10,
+                            marginLeft: 15,
+                            borderColor: (listOfTasks[index].priority === "Medium") ? "#F2B100" 
+                                : (listOfTasks[index].priority === "Low") ? "#14DC3D" 
+                                : (listOfTasks[index].priority === "High") ? "#FF2D1E" 
+                                : "#F2B100"
+                        }}>
+                            <Text style={{
+                                fontSize: 16,
+                                paddingTop: 5,
+                                paddingBottom: 5,
+                                alignSelf: "center",
+                                justifyContent: "center",
+                                color: (listOfTasks[index].priority === "Medium") ? "#F2B100" 
+                                    : (listOfTasks[index].priority === "Low") ? "#14DC3D" 
+                                    : (listOfTasks[index].priority === "High") ? "#FF2D1E" 
+                                    : "#F2B100",
+                            }}>{listOfTasks[index].priority}</Text>
+                        </View>
+                    </View>
+                    <Text style={styles(null).sectionHeader}>Reward</Text>
+                    <Text style={styles(null).sectionContent}>{listOfTasks[index].reward}</Text>
                     <Text style={styles(null).sectionHeader}>Notes</Text>
                     <Text style={styles(null).sectionContent}>{listOfTasks[index].notes}</Text>
                 </View>
@@ -55,6 +112,21 @@ export default function ViewTaskScreen({ route, navigation }) {
 }
 
 const styles = (color) => StyleSheet.create({
+    prioritySectionContent: {
+        fontSize: 18,
+        paddingTop: 5,
+        paddingBottom: 5,
+        fontWeight: "bold",
+        alignSelf: "center",
+        justifyContent: "center"
+    },
+    priorityWrapper: {
+        borderWidth: 1,
+        borderColor: "thistle",
+        borderRadius: 50,
+        width: 100,
+        marginBottom: 15
+    },
     circular: {
         width: 50,
         height: 50,

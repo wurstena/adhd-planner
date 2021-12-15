@@ -11,9 +11,9 @@ import { useIsFocused } from "@react-navigation/native";
 let deviceWidth = Dimensions.get('window').width
 
 var radio_props = [
-    { label: 'Low', index: 0, color: "green" },
-    { label: 'Medium', index: 1, color: "orange" },
-    { label: 'High', index: 2, color: "red" }
+    { label: 'Low', value: 0, color: "green" },
+    { label: 'Medium', value: 1, color: "orange" },
+    { label: 'High', value: 2, color: "red" }
 ];
 
 const ADD_CATEGORY_OPTION = [
@@ -51,6 +51,7 @@ export default function AddTaskScreen({ route, navigation }) {
         setDate(null)
         setTime(null)
         setNotes(null)
+        setRadioButtonVal(1)
         rewardDropdownRef.current.select(-1)
         categoryDropdownRef.current.select(-1)
         navigation.navigate(previous, { update: false })
@@ -92,6 +93,7 @@ export default function AddTaskScreen({ route, navigation }) {
             setDate(null)
             setTime(null)
             setNotes(null)
+            setRadioButtonVal(1)
             rewardDropdownRef.current.select(-1)
             categoryDropdownRef.current.select(-1)
             navigation.navigate(previous, { update: true })
@@ -331,7 +333,9 @@ export default function AddTaskScreen({ route, navigation }) {
                                 radio_props={radio_props}
                                 initial={1}
                                 formHorizontal={true}
-                                onPress={(index) => { setRadioButtonVal(index) }}
+                                onPress={(value) => {
+                                    setRadioButtonVal(value)
+                                }}
                                 radioStyle={{ paddingRight: 50 }}
                             />
                         </View>
