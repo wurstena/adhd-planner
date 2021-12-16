@@ -86,8 +86,8 @@ export default function AddTaskScreen({ route, navigation }) {
                 title: title,
                 category: category_label,
                 reward: reward,
-                date: showDate ? moment(date).format("MM/DD/YY") : null,
-                time: showTime ? moment(time).format('LT') : null,
+                date: showDate ? date : null,
+                time: showTime ? time : null,
                 priority: priority,
                 notes: notes
             }
@@ -190,7 +190,6 @@ export default function AddTaskScreen({ route, navigation }) {
     };
 
     const onChangeTime = (event, selectedDate) => {
-        console.log(selectedDate);
         const currentDate = selectedDate || time;
         // setShow(Platform.OS === 'ios');
         setTime(currentDate);

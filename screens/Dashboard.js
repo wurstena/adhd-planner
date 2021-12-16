@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { KeyboardAvoidingView, Button, StyleSheet, Text, View, TextInput, TouchableOpacity, Keyboard, ScrollView } from 'react-native';
+import { KeyboardAvoidingView, Button, StyleSheet, Text, View, TextInput, TouchableOpacity, Keyboard, ScrollView, Dimensions } from 'react-native';
 import Task from '../components/Task';
 import { Ionicons } from '@expo/vector-icons';
-import { completeTask, task_list, completed_task_list, getGraphData, getPriorityData, getCategories, category_list } from '../storage/saveInput';
+import { completeTask, task_list, completed_task_list, getGraphData, getPriorityData, getCategories, category_list, shufflePriorityData, getTasksData } from '../storage/saveInput';
 import { useIsFocused } from "@react-navigation/native";
 import { PieChart } from 'react-native-svg-charts'
 
@@ -36,11 +36,12 @@ export default function DashboardScreen({ route, navigation }) {
 
     function showTasks() {
         let priorityTaskList = getPriorityData()
+        let totalTaskList = getTasksData()
         let categoryList = getCategories()
         return (
             <View>
                 {
-                    priorityTaskList.map((object, index) => {
+                    priorityTaskList.length > 0 ? priorityTaskList.map((object, index) => {
                         let category_title = object.category
                         let category = categoryList.find(item => item.title == category_title)
                         let color = (category) ? category.color : "#b8b8b8"
@@ -49,7 +50,9 @@ export default function DashboardScreen({ route, navigation }) {
                                 <Task task={object} text={object.title} key={index} color={color} index={index} value={value} setValue={setValue} />
                             </TouchableOpacity>
                         )
-                    })
+                    }) : (priorityTaskList.length > 0 && totalTaskList.length > 0) 
+                    ? <Text>Press "Shuffle Tasks" to see more</Text> 
+                    : null
                 }
             </View>
         );
@@ -58,47 +61,64 @@ export default function DashboardScreen({ route, navigation }) {
     function showPieChart() {
         data_stuff = getGraphData();
         const pieData = (data_stuff && data_stuff.length > 0) ? data_stuff
-            .filter((value) => value > 0)
             .map((value, index) => ({
                 value,
                 svg: {
-                    fill: randomColor(index),
+                    fill: (index == 0 ? "#5CAEC9" : index == 1 ? "#47A294" : "blue"),
                     onPress: () => console.log('press', index),
                 },
                 key: `pie-${index}`,
             })) : []
         return (
             <View>
-                <PieChart style={styles.PieChart} data={pieData} />
+                {(data_stuff[0] != 0 || data_stuff[1] != 0) ?
+                    <View>
+                        <PieChart style={styles.PieChart} data={pieData} />
+                        <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-evenly", width: "100%" }}>
+                            <View style={{ flexDirection: "row", alignItems: "center", }}>
+                                <View style={styles.completedCircle}></View>
+                                <Text>Completed</Text>
+                            </View>
+                            <View style={{ flexDirection: "row", alignItems: "center", }}>
+                                <View style={styles.todoCircle}></View>
+                                <Text>To Do</Text>
+                            </View>
+                        </View>
+                    </View>
+                    : <Text style={styles.placeHolderText}>Press the + button to add your first task</Text>}
+                {/* <PieChart style={styles.PieChart} data={pieData} /> */}
+
+
             </View>
         );
     }
 
-    const randomColor = (index) => (index == 1 ? "red" : index == 2 ? "green" : "blue")
-
     return (
         <View style={styles.container}>
             {/* Added this scroll view to enable scrolling when list gets longer than the page */}
-            <ScrollView
-                contentContainerStyle={{
-                    flexGrow: 1
-                }}
-                keyboardShouldPersistTaps='handled'
-            >
-
-                {/* Today's Tasks */}
+            <View>
                 <View style={styles.tasksWrapper}>
-                    <Text style={styles.sectionTitle}>Today's tasks</Text>
+                    <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between" }}>
+                        <Text style={styles.sectionTitle}>Top 3 Upcoming Tasks</Text>
+                        <TouchableOpacity style={styles.shuffleButton} onPress={() => {
+                            shufflePriorityData()
+                            setValue(!value)
+                        }}>
+                            <Text style={styles.shuffleButtonText}>Shuffle Tasks</Text>
+                        </TouchableOpacity>
+                    </View>
                     <View style={styles.items}>
                         {
                             showTasks()
                         }
                     </View>
                 </View>
-            </ScrollView>
+            </View>
 
-            <View>
+            <View style={styles.monthDetailWrapper}>
+                <Text style={styles.sectionTitle}>This Month's Progress</Text>
                 {showPieChart()}
+
             </View>
 
         </View>
@@ -106,9 +126,57 @@ export default function DashboardScreen({ route, navigation }) {
 }
 
 const styles = StyleSheet.create({
+    shuffleButtonText: {
+        textAlign: "center",
+        fontSize: 12
+    },
+    shuffleButton: {
+        width: 60,
+        backgroundColor: "#ffffff",
+        shadowColor: '#000',
+        shadowOffset: { width: 2, height: 3 },
+        shadowOpacity: 0.2,
+        shadowRadius: 4,
+        borderRadius: 12,
+        padding: 5
+    },
+    todoCircle: {
+        width: 18,
+        height: 18,
+        backgroundColor: "#5CAEC9",
+        // borderColor: "#F8F8F8",
+        // borderWidth: 2,
+        borderRadius: 30,
+        marginHorizontal: 8,
+    },
+    completedCircle: {
+        width: 18,
+        height: 18,
+        backgroundColor: "#47A294",
+        // borderColor: "#F8F8F8",
+        // borderWidth: 2,
+        borderRadius: 30,
+        marginHorizontal: 8
+    },
+    placeHolderText: {
+        // marginBottom: 50,
+        marginTop: 30,
+        fontSize: 18,
+        width: 220,
+        // borderColor:"#5CAEC9",
+        // borderWidth:2,
+        backgroundColor: "#94C9DB",
+        borderRadius: 25,
+        textAlign: "center",
+        justifyContent: "center",
+        alignSelf: "center",
+        padding: 20,
+        overflow: "hidden",
+    },
     PieChart: {
         height: 200,
-        marginBottom: 50
+        marginBottom: 15,
+        marginTop: 20
     },
     graphContainer: {
         // alignSelf: "center",
@@ -122,13 +190,19 @@ const styles = StyleSheet.create({
     tasksWrapper: {
         paddingTop: 20,
         paddingHorizontal: 20,
+        minHeight: 292
+    },
+    monthDetailWrapper: {
+        // paddingTop: 20,
+        paddingHorizontal: 20,
+        alignItems: "center",
     },
     sectionTitle: {
         fontSize: 24,
-        fontWeight: 'bold'
+        color: "#4b4b4b",
     },
     items: {
-        marginTop: 30,
+        marginTop: 20,
     },
     writeTaskWrapper: {
         position: 'absolute',

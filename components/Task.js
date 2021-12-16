@@ -48,9 +48,8 @@ const Task = (props) => {
           }}>{props.task.priority}</Text>
         </View>
         <View style={{ flexDirection: "column" }}>
-          <Text style={styles(props).itemDate}>{props.task.date}</Text>
-          {/* <Text style={styles(props).itemDate}>{moment(props.task.date).format("DD/MM/YY")}</Text> */}
-          <Text style={styles(props).itemTime}>{props.task.time}</Text>
+          <Text style={styles(props).itemDate}>{(moment(props.task.date).format("MM/DD/YY") !== "Invalid date") ? moment(props.task.date).format("MM/DD/YY") : null}</Text>
+          <Text style={styles(props).itemTime}>{(moment(props.task.time).format('LT') !== "Invalid date") ? moment(props.task.time).format('LT') : null}</Text>
         </View>
       </View>
     </View>
