@@ -5,9 +5,9 @@ import { completeTask, task_list, completed_task_list } from '../storage/saveInp
 
 const Task = (props) => {
   function completeTaskAtIndex(index, value) {
+    props.confettiRef.current.start()
     completeTask(index)
     props.setValue(value => value + 1)
-    props.confettiRef.current.start()
     createAlert(props.task.reward ? `Your reward is: ${props.task.reward}!` : "")
   }
 
