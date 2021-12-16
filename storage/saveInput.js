@@ -73,7 +73,6 @@ export function getPriorityData() {
 }
 
 export function shufflePriorityData() {
-  console.log("in shuffle")
   if (tasks.length >= 3) {
     let index_1 = Math.floor(Math.random() * tasks.length);
     let index_2 = Math.floor(Math.random() * tasks.length);

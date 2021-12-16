@@ -3,8 +3,9 @@ import { Alert, Keyboard, TextInput, ScrollView, Button, View, Text, StyleSheet,
 import { Ionicons } from '@expo/vector-icons';
 import { Dimensions } from 'react-native';
 import { ColorPicker } from 'react-native-status-color-picker';
-import { saveCategory, getCategories, getRewards, getTasksData } from '../storage/saveInput'
+import { saveCategory, getCategories, getRewards, getTasksData, deleteTask } from '../storage/saveInput'
 import { useIsFocused } from "@react-navigation/native";
+import { TouchableOpacity } from 'react-native-gesture-handler';
 
 
 export default function ViewTaskScreen({ route, navigation }) {
@@ -27,6 +28,11 @@ export default function ViewTaskScreen({ route, navigation }) {
         //     />
         // )
     });
+
+    function deleteTaskHandler(index) {
+        deleteTask(index)
+        navigation.navigate(previous, { update: false })
+    }
 
     const [value, setValue] = useState(0); // integer state
     // const [listOfCategories, setListOfCategories] = useState([])
@@ -75,7 +81,7 @@ export default function ViewTaskScreen({ route, navigation }) {
                             <Text style={styles(null).sectionContent}>{listOfTasks[index].time}</Text>
                         </View>
                     </View>
-                    <View style={{ flexDirection: "row", alignItems: "center", marginBottom: 15}}>
+                    <View style={{ flexDirection: "row", alignItems: "center", marginBottom: 15 }}>
                         <Text style={styles(null).sectionHeader}>Priority</Text>
                         <View style={{
                             borderWidth: 1,
@@ -83,10 +89,10 @@ export default function ViewTaskScreen({ route, navigation }) {
                             paddingLeft: 10,
                             paddingRight: 10,
                             marginLeft: 15,
-                            borderColor: (listOfTasks[index].priority === "Medium") ? "#F2B100" 
-                                : (listOfTasks[index].priority === "Low") ? "#14DC3D" 
-                                : (listOfTasks[index].priority === "High") ? "#FF2D1E" 
-                                : "#F2B100"
+                            borderColor: (listOfTasks[index].priority === "Medium") ? "#F2B100"
+                                : (listOfTasks[index].priority === "Low") ? "#14DC3D"
+                                    : (listOfTasks[index].priority === "High") ? "#FF2D1E"
+                                        : "#F2B100"
                         }}>
                             <Text style={{
                                 fontSize: 16,
@@ -94,10 +100,10 @@ export default function ViewTaskScreen({ route, navigation }) {
                                 paddingBottom: 5,
                                 alignSelf: "center",
                                 justifyContent: "center",
-                                color: (listOfTasks[index].priority === "Medium") ? "#F2B100" 
-                                    : (listOfTasks[index].priority === "Low") ? "#14DC3D" 
-                                    : (listOfTasks[index].priority === "High") ? "#FF2D1E" 
-                                    : "#F2B100",
+                                color: (listOfTasks[index].priority === "Medium") ? "#F2B100"
+                                    : (listOfTasks[index].priority === "Low") ? "#14DC3D"
+                                        : (listOfTasks[index].priority === "High") ? "#FF2D1E"
+                                            : "#F2B100",
                             }}>{listOfTasks[index].priority}</Text>
                         </View>
                     </View>
@@ -106,12 +112,24 @@ export default function ViewTaskScreen({ route, navigation }) {
                     <Text style={styles(null).sectionHeader}>Notes</Text>
                     <Text style={styles(null).sectionContent}>{listOfTasks[index].notes}</Text>
                 </View>
+                <TouchableOpacity style={styles(null).trashCan} onPress={(index) => deleteTaskHandler(index)}>
+                    <Ionicons name="trash" color="red" size="30" />
+                    <Text style={{ padding: 10, fontSize: 16 }}>Delete Task</Text>
+                </TouchableOpacity>
             </ScrollView >
         </View >
     );
 }
 
 const styles = (color) => StyleSheet.create({
+    trashCan: {
+        width: "100%",
+        backgroundColor: "#ffffff",
+        paddingVertical: 5,
+        alignItems: "center",
+        justifyContent: "center",
+        flexDirection: "row"
+    },
     prioritySectionContent: {
         fontSize: 18,
         paddingTop: 5,

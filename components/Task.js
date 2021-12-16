@@ -3,7 +3,6 @@ import React, { useState } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { completeTask, task_list, completed_task_list } from '../storage/saveInput';
 
-
 const Task = (props) => {
   function completeTaskAtIndex(index, value) {
     completeTask(index)
@@ -12,6 +11,7 @@ const Task = (props) => {
 
   return (
     <View style={styles(props).item}>
+      
       <View style={styles(props).itemLeft}>
         <View style={styles(props).square}></View>
         <TouchableOpacity onPress={() => completeTaskAtIndex(props.index, props.value)}>

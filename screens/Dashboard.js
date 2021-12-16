@@ -50,9 +50,9 @@ export default function DashboardScreen({ route, navigation }) {
                                 <Task task={object} text={object.title} key={index} color={color} index={index} value={value} setValue={setValue} />
                             </TouchableOpacity>
                         )
-                    }) : (priorityTaskList.length > 0 && totalTaskList.length > 0) 
-                    ? <Text>Press "Shuffle Tasks" to see more</Text> 
-                    : null
+                    }) : (priorityTaskList.length > 0 && totalTaskList.length > 0)
+                        ? <Text>Press "Shuffle Tasks" to see more</Text>
+                        : null
                 }
             </View>
         );
