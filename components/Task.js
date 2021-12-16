@@ -16,7 +16,40 @@ const Task = (props) => {
         <TouchableOpacity onPress={() => completeTaskAtIndex(props.index, props.value)}>
           <View style={styles(props).circular}></View>
         </TouchableOpacity>
-        <Text style={styles(props).itemText}>{props.text}</Text>
+        <View style={{ flexDirection: "column" }}>
+          <Text style={styles(props).itemText}>{props.task.title}</Text>
+          <Text style={styles(props).itemCategory}>{props.task.category}</Text>
+        </View>
+      </View>
+      <View style={styles(props).itemRight}>
+        <View style={{
+          borderWidth: 1,
+          borderRadius: 50,
+          paddingLeft: 8,
+          paddingRight: 8,
+          // justifyContent:,
+          marginRight: 15,
+          borderColor: (props.task.priority === "Medium") ? "#F2B100"
+            : (props.task.priority === "Low") ? "#14DC3D"
+              : (props.task.priority === "High") ? "#FF2D1E"
+                : "#F2B100"
+        }}>
+          <Text style={{
+            fontSize: 11,
+            paddingTop: 2,
+            paddingBottom: 2,
+            alignSelf: "center",
+            justifyContent: "center",
+            color: (props.task.priority === "Medium") ? "#F2B100"
+              : (props.task.priority === "Low") ? "#14DC3D"
+                : (props.task.priority === "High") ? "#FF2D1E"
+                  : "#F2B100",
+          }}>{props.task.priority}</Text>
+        </View>
+        <View style={{ flexDirection: "column" }}>
+          <Text style={styles(props).itemDate}>{props.task.date}</Text>
+          <Text style={styles(props).itemTime}>{props.task.time}</Text>
+        </View>
       </View>
     </View>
   )
@@ -48,6 +81,12 @@ const styles = (props) => StyleSheet.create({
     alignItems: 'center',
     flexWrap: 'wrap'
   },
+  itemRight: {
+    justifyContent: "flex-start",
+    flexDirection: 'row',
+    alignItems: 'center',
+    flexWrap: 'wrap'
+  },
   square: {
     width: 19,
     height: 51,
@@ -55,7 +94,22 @@ const styles = (props) => StyleSheet.create({
     marginRight: 10,
   },
   itemText: {
-    maxWidth: '80%',
+    fontSize: 18,
+    paddingBottom: 2
+  },
+  itemCategory: {
+    fontSize: 14,
+  },
+  itemDate: {
+    fontSize: 14,
+    alignSelf: "flex-end",
+    paddingRight: 10,
+    paddingBottom: 2
+  },
+  itemTime: {
+    fontSize: 14,
+    alignSelf: "flex-end",
+    paddingRight: 10,
   },
   circular: {
     width: 27,

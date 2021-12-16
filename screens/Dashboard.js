@@ -46,7 +46,7 @@ export default function DashboardScreen({ route, navigation }) {
                         let color = (category) ? category.color : "#b8b8b8"
                         return (
                             <TouchableOpacity onPress={() => showTask(index)}>
-                                <Task text={object.title} key={index} color={color} index={index} value={value} setValue={setValue} />
+                                <Task task={object} text={object.title} key={index} color={color} index={index} value={value} setValue={setValue} />
                             </TouchableOpacity>
                         )
                     })
