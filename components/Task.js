@@ -1,17 +1,28 @@
 import moment from 'moment';
-import React, { useState } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
+import React, { useState, useRef } from 'react';
+import { View, Text, StyleSheet, TouchableOpacity, Alert } from 'react-native';
 import { completeTask, task_list, completed_task_list } from '../storage/saveInput';
 
 const Task = (props) => {
   function completeTaskAtIndex(index, value) {
     completeTask(index)
     props.setValue(value => value + 1)
+    props.confettiRef.current.start()
+    createAlert(props.task.reward ? `Your reward is: ${props.task.reward}!` : "")
+  }
+
+  function createAlert(message) {
+    Alert.alert(
+      "Congratulations!",
+      message,
+      [
+        { text: "OK", onPress: () => console.log("OK Pressed"), style: "cancel" }
+      ]
+    );
   }
 
   return (
     <View style={styles(props).item}>
-      
       <View style={styles(props).itemLeft}>
         <View style={styles(props).square}></View>
         <TouchableOpacity onPress={() => completeTaskAtIndex(props.index, props.value)}>

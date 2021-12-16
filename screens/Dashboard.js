@@ -1,10 +1,12 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { KeyboardAvoidingView, Button, StyleSheet, Text, View, TextInput, TouchableOpacity, Keyboard, ScrollView, Dimensions } from 'react-native';
 import Task from '../components/Task';
 import { Ionicons } from '@expo/vector-icons';
 import { completeTask, task_list, completed_task_list, getGraphData, getPriorityData, getCategories, category_list, shufflePriorityData, getTasksData } from '../storage/saveInput';
 import { useIsFocused } from "@react-navigation/native";
 import { PieChart } from 'react-native-svg-charts'
+import ConfettiCannon from 'react-native-confetti-cannon';
+
 
 export default function DashboardScreen({ route, navigation }) {
     navigation.setOptions({
@@ -30,6 +32,9 @@ export default function DashboardScreen({ route, navigation }) {
 
     const [value, setValue] = useState(false)
 
+    const confettiRef = useRef("confetti")
+
+
     function showTask(index) {
         navigation.navigate("View Task", { previous: "Dashboard", index: { index } })
     }
@@ -47,7 +52,7 @@ export default function DashboardScreen({ route, navigation }) {
                         let color = (category) ? category.color : "#b8b8b8"
                         return (
                             <TouchableOpacity onPress={() => showTask(index)}>
-                                <Task task={object} text={object.title} key={index} color={color} index={index} value={value} setValue={setValue} />
+                                <Task task={object} text={object.title} key={index} color={color} index={index} value={value} confettiRef={confettiRef} setValue={setValue} />
                             </TouchableOpacity>
                         )
                     }) : (priorityTaskList.length > 0 && totalTaskList.length > 0)
@@ -96,6 +101,7 @@ export default function DashboardScreen({ route, navigation }) {
     return (
         <View style={styles.container}>
             {/* Added this scroll view to enable scrolling when list gets longer than the page */}
+
             <View>
                 <View style={styles.tasksWrapper}>
                     <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between" }}>
@@ -107,6 +113,7 @@ export default function DashboardScreen({ route, navigation }) {
                             <Text style={styles.shuffleButtonText}>Shuffle Tasks</Text>
                         </TouchableOpacity>
                     </View>
+
                     <View style={styles.items}>
                         {
                             showTasks()
@@ -121,6 +128,14 @@ export default function DashboardScreen({ route, navigation }) {
 
             </View>
 
+            <ConfettiCannon
+                count={200}
+                origin={{ x: Dimensions.get("screen").width /2, y: -20}}
+                autoStart={false}
+                explosionSpeed={1200}
+                fadeOut={true}
+                ref={confettiRef}
+            />
         </View>
     );
 }
