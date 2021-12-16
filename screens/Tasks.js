@@ -1,9 +1,11 @@
-import React, { useState, useEffect } from 'react';
-import { KeyboardAvoidingView, Button, StyleSheet, Text, View, TextInput, TouchableOpacity, Keyboard, ScrollView } from 'react-native';
+import React, { useState, useEffect, useRef } from 'react';
+import { KeyboardAvoidingView, Dimensions, Button, StyleSheet, Text, View, TextInput, TouchableOpacity, Keyboard, ScrollView } from 'react-native';
 import Task from '../components/Task';
 import { Ionicons } from '@expo/vector-icons';
 import { completeTask, task_list, completed_task_list, getTasksData, getCategories } from '../storage/saveInput';
 import { useIsFocused } from "@react-navigation/native";
+import ConfettiCannon from 'react-native-confetti-cannon';
+
 
 export default function TasksScreen({ route, navigation }) {
   const [value, setValue] = useState(0); // integer state
@@ -25,6 +27,8 @@ export default function TasksScreen({ route, navigation }) {
   }
 
   let listOfTasks = getTasksData()
+  const confettiRef = useRef("confetti")
+
 
   function showTasks() {
     let categoryList = getCategories()
@@ -37,7 +41,7 @@ export default function TasksScreen({ route, navigation }) {
             let color = (category) ? category.color : "#b8b8b8"
             return (
               <TouchableOpacity onPress={() => showTask(index)}>
-                <Task task={object} text={object.title} key={index} color={color} index={index} value={value} setValue={setValue} />
+                <Task task={object} text={object.title} key={index} color={color} index={index} confettiRef={confettiRef} value={value} setValue={setValue} />
               </TouchableOpacity>
             )
           })
@@ -68,6 +72,14 @@ export default function TasksScreen({ route, navigation }) {
         </View>
 
       </ScrollView>
+      <ConfettiCannon
+        count={200}
+        origin={{ x: Dimensions.get("screen").width / 2, y: -20 }}
+        autoStart={false}
+        explosionSpeed={1200}
+        fadeOut={true}
+        ref={confettiRef}
+      />
     </View>
   );
 }
