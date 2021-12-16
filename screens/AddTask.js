@@ -7,6 +7,9 @@ import { ColorPicker } from 'react-native-status-color-picker';
 import RadioForm, { RadioButton, RadioButtonInput, RadioButtonLabel } from 'react-native-simple-radio-button';
 import saveTasks, { rewards_list, category_list, saveCategory, saveReward, getCategories, getRewards } from '../storage/saveInput'
 import { useIsFocused } from "@react-navigation/native";
+import DateTimePicker from '@react-native-community/datetimepicker';
+import { TouchableOpacity } from 'react-native-gesture-handler';
+import moment from 'moment';
 
 let deviceWidth = Dimensions.get('window').width
 
@@ -48,8 +51,10 @@ export default function AddTaskScreen({ route, navigation }) {
         setTitle(null)
         setCategoryLabel(null)
         setReward(null)
-        setDate(null)
-        setTime(null)
+        setShowDate(false)
+        setShowTime(false)
+        setDate(new Date())
+        setTime(new Date())
         setNotes(null)
         setRadioButtonVal(1)
         rewardDropdownRef.current.select(-1)
@@ -81,8 +86,8 @@ export default function AddTaskScreen({ route, navigation }) {
                 title: title,
                 category: category_label,
                 reward: reward,
-                date: date,
-                time: time,
+                date: showDate ? moment(date).format("MM/DD/YY") : null,
+                time: showTime ? moment(time).format('LT') : null,
                 priority: priority,
                 notes: notes
             }
@@ -90,8 +95,10 @@ export default function AddTaskScreen({ route, navigation }) {
             setTitle(null)
             setCategoryLabel(null)
             setReward(null)
-            setDate(null)
-            setTime(null)
+            setShowDate(false)
+            setShowTime(false)
+            setDate(new Date())
+            setTime(new Date())
             setNotes(null)
             setRadioButtonVal(1)
             rewardDropdownRef.current.select(-1)
@@ -159,8 +166,6 @@ export default function AddTaskScreen({ route, navigation }) {
     // var [title, category_label, date, time, priority, reward, notes] = useState("", "", "", "", "", "", "")
     const [title, setTitle] = useState(null)
     const [category_label, setCategoryLabel] = useState(null);
-    const [date, setDate] = useState(null);
-    const [time, setTime] = useState(null);
     const [reward, setReward] = useState(null);
     const [notes, setNotes] = useState(null);
     const [newCategoryTitle, setNewCategoryTitle] = useState(null)
@@ -172,6 +177,36 @@ export default function AddTaskScreen({ route, navigation }) {
     const [addedNewReward, setAddedNewReward] = useState(false)
     // var addedNewCategory = false;
     // var addedNewReward = false;
+
+    const [time, setTime] = useState(new Date());
+    const [date, setDate] = useState(new Date());
+    const [showDate, setShowDate] = useState(false);
+    const [showTime, setShowTime] = useState(false);
+
+    const onChangeDate = (event, selectedDate) => {
+        const currentDate = selectedDate || date;
+        // setShow(Platform.OS === 'ios');
+        setDate(currentDate);
+    };
+
+    const onChangeTime = (event, selectedDate) => {
+        console.log(selectedDate);
+        const currentDate = selectedDate || time;
+        // setShow(Platform.OS === 'ios');
+        setTime(currentDate);
+    };
+
+    const showMode = (currentMode) => {
+        setShow(true);
+    };
+
+    const showDatepicker = () => {
+        setShowDate(!showDate);
+    };
+
+    const showTimepicker = () => {
+        setShowTime(!showTime);
+    }
 
     function saveCategoryModal() {
         setCategoryModalVisible(!categoryModalVisible)
@@ -295,36 +330,42 @@ export default function AddTaskScreen({ route, navigation }) {
                             renderRow={dropdown_renderDropDownRow.bind(this)}
                             renderButtonText={(rowData) => dropdown_renderButtonText(rowData)}>
                         </ModalDropdown>
-                        <View style={{ flexDirection: 'row' }}>
-                            <View
-                                style={{
-                                    flexDirection: 'column',
-                                    width: (Dimensions.get('screen').width / 2 - 25),
-                                    marginRight: 5
-                                }}>
+                        <View style={{ flexDirection: "row", marginBottom: 10, justifyContent: "space-between" }}>
+                            <View style={{ flexDirection: "column", width: (Dimensions.get('screen').width / 2 - 25), }}>
                                 <Text style={styles.inputHeader}>Date</Text>
-                                <TextInput
-                                    style={styles.textInput}
-                                    maxLength={20}
-                                    value={date}
-                                    onBlur={Keyboard.dismiss}
-                                    onChangeText={(text) => setDate(text)}
-                                />
+                                <TouchableOpacity onPress={showDatepicker}>
+                                    <View style={styles.dateTimePickerButton}>
+                                        <Text style={{ fontSize: 14, color: "#007aff", margin: 8 }}>{!showDate ? "Choose a Due Date" : "Remove Date"}</Text>
+                                    </View>
+                                </TouchableOpacity>
+                                <View style={{ marginTop: 12 }}>
+                                    {showDate && (<DateTimePicker
+                                        testID="dateTimePicker"
+                                        value={date}
+                                        mode={"date"}
+                                        is24Hour={true}
+                                        display="default"
+                                        onChange={onChangeDate}
+                                    />)}
+                                </View>
                             </View>
-                            <View
-                                style={{
-                                    flexDirection: 'column',
-                                    width: (Dimensions.get('screen').width / 2 - 25),
-                                    marginLeft: 5
-                                }}>
+                            <View style={{ flexDirection: "column", width: (Dimensions.get('screen').width / 2 - 25), }}>
                                 <Text style={styles.inputHeader}>Time</Text>
-                                <TextInput
-                                    style={styles.textInput}
-                                    maxLength={20}
-                                    onBlur={Keyboard.dismiss}
-                                    value={time}
-                                    onChangeText={(text) => setTime(text)}
-                                />
+                                <TouchableOpacity onPress={showTimepicker}>
+                                    <View style={styles.dateTimePickerButton}>
+                                        <Text style={{ fontSize: 14, color: "#007aff", margin: 8 }}>{!showTime ? "Choose a Due Time" : "Remove Time"}</Text>
+                                    </View>
+                                </TouchableOpacity>
+                                <View style={{ marginTop: 12 }}>
+                                    {showTime && (<DateTimePicker
+                                        testID="dateTimePicker"
+                                        value={time}
+                                        mode={"time"}
+                                        is24Hour={true}
+                                        display="default"
+                                        onChange={onChangeTime}
+                                    />)}
+                                </View>
                             </View>
                         </View>
                         <View style={{ marginBottom: 10 }}>
@@ -366,6 +407,17 @@ export default function AddTaskScreen({ route, navigation }) {
 }
 
 const styles = StyleSheet.create({
+    dateTimePickerButton: {
+        alignSelf: 'baseline',
+        backgroundColor: "#ffffff",
+        borderRadius: 12,
+        shadowColor: '#000',
+        shadowOffset: { width: 2, height: 3 },
+        shadowOpacity: 0.2,
+        shadowRadius: 4,
+        width: (Dimensions.get('screen').width / 2 - 35),
+        alignItems: "center"
+    },
     container: {
         flex: 1,
         backgroundColor: '#F8F8F8',

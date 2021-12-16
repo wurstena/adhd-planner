@@ -1,3 +1,4 @@
+import moment from 'moment';
 import React, { useState } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { completeTask, task_list, completed_task_list } from '../storage/saveInput';
@@ -48,6 +49,7 @@ const Task = (props) => {
         </View>
         <View style={{ flexDirection: "column" }}>
           <Text style={styles(props).itemDate}>{props.task.date}</Text>
+          {/* <Text style={styles(props).itemDate}>{moment(props.task.date).format("DD/MM/YY")}</Text> */}
           <Text style={styles(props).itemTime}>{props.task.time}</Text>
         </View>
       </View>
