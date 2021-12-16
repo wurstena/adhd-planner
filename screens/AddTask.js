@@ -202,10 +202,12 @@ export default function AddTaskScreen({ route, navigation }) {
 
     const showDatepicker = () => {
         setShowDate(!showDate);
+        setDate(new Date())
     };
 
     const showTimepicker = () => {
         setShowTime(!showTime);
+        setTime(new Date())
     }
 
     function saveCategoryModal() {
