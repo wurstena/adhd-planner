@@ -1,4 +1,4 @@
-
+import moment from 'moment';
 var tasks = [];
 var completedTasks = [];
 var rewards = [];
@@ -121,6 +121,42 @@ export function getTasksData() {
   // sortArrayByDate(tasks)
   // sortArrayByDate(completedTasks)
   return tasks
+}
+
+export function getTodayTasks() {
+  let todays_tasks = []
+  var now = moment();
+  for (var i in tasks) {
+    var task_date = moment(tasks[i].date);
+    if (moment(now).isSame(task_date, "day")) {
+      todays_tasks.push(tasks[i])
+    }
+  }
+  return todays_tasks
+}
+
+export function getThisWeekTasks() {
+  let todays_tasks = []
+  var now = moment();
+  for (var i in tasks) {
+    var task_date = moment(tasks[i].date);
+    if (now.isoWeek() == task_date.isoWeek()) {
+      todays_tasks.push(tasks[i])
+    }
+  }
+  return todays_tasks
+}
+
+export function getThisMonthTasks() {
+  let todays_tasks = []
+  var now = moment();
+  for (var i in tasks) {
+    var task_date = moment(tasks[i].date);
+    if (now.month() == task_date.month()) {
+      todays_tasks.push(tasks[i])
+    }
+  }
+  return todays_tasks
 }
 
 export function getCompletedTaskData() {

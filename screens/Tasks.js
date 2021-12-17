@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { KeyboardAvoidingView, Dimensions, Button, StyleSheet, Text, View, TextInput, TouchableOpacity, Keyboard, ScrollView } from 'react-native';
 import Task from '../components/Task';
 import { Ionicons } from '@expo/vector-icons';
-import { completeTask, task_list, completed_task_list, getTasksData, getCategories } from '../storage/saveInput';
+import { completeTask, task_list, completed_task_list, getTasksData, getCategories, getTodayTasks, getThisWeekTasks, getThisMonthTasks } from '../storage/saveInput';
 import { useIsFocused } from "@react-navigation/native";
 import ConfettiCannon from 'react-native-confetti-cannon';
 
@@ -34,8 +34,19 @@ export default function TasksScreen({ route, navigation }) {
 
   const confettiRef = useRef("confetti")
 
+  const [tabSelected, setTabSelected] = useState("Today")
+
   function showTasks() {
-    let listOfTasks = getTasksData()
+    let listOfTasks = [];
+    if (tabSelected === "Today") {
+      listOfTasks = getTodayTasks();
+    } else if (tabSelected === "This Week") {
+      listOfTasks = getThisWeekTasks();
+    } else if (tabSelected === "This Month") {
+      listOfTasks = getThisMonthTasks();
+    } else {
+      listOfTasks = getTasksData()
+    }
     let categoryList = getCategories()
     return (
       <View>
@@ -68,6 +79,40 @@ export default function TasksScreen({ route, navigation }) {
   return (
     <View style={styles.container}>
       {/* Added this scroll view to enable scrolling when list gets longer than the page */}
+      <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
+        <TouchableOpacity onPress={() => setTabSelected("Today")}>
+          <Text style={{
+            backgroundColor: tabSelected === "Today" ? "#5CAEC9" : "#94C9DB",
+            fontSize: 18,
+            padding: 8,
+            color: "white"
+          }}>Today</Text>
+        </TouchableOpacity>
+        <TouchableOpacity onPress={() => setTabSelected("This Week")}>
+          <Text style={{
+            backgroundColor: tabSelected === "This Week" ? "#5CAEC9" : "#94C9DB",
+            fontSize: 18,
+            padding: 8,
+            color: "white"
+          }}>This Week</Text>
+        </TouchableOpacity>
+        <TouchableOpacity onPress={() => setTabSelected("This Month")}>
+          <Text style={{
+            backgroundColor: tabSelected === "This Month" ? "#5CAEC9" : "#94C9DB",
+            fontSize: 18,
+            padding: 8,
+            color: "white"
+          }}>This Month</Text>
+        </TouchableOpacity>
+        <TouchableOpacity onPress={() => setTabSelected("All Tasks")}>
+          <Text style={{
+            backgroundColor: tabSelected === "All Tasks" ? "#5CAEC9" : "#94C9DB",
+            fontSize: 18,
+            padding: 8,
+            color: "white"
+          }}>All Tasks</Text>
+        </TouchableOpacity>
+      </View>
       <ScrollView
         contentContainerStyle={{
           flexGrow: 1
@@ -99,6 +144,12 @@ export default function TasksScreen({ route, navigation }) {
 }
 
 const styles = StyleSheet.create({
+  tab: {
+    backgroundColor: "#94C9DB",
+    fontSize: 18,
+    padding: 8,
+    color: "white"
+  },
   placeHolderText: {
     // marginBottom: 50,
     fontSize: 18,
@@ -126,7 +177,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold'
   },
   items: {
-    marginTop: 30,
+    // marginTop: 30,
   },
   writeTaskWrapper: {
     position: 'absolute',
