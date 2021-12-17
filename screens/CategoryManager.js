@@ -17,20 +17,22 @@ export default function CategoryManagerScreen({ navigation, route }) {
 
   function showCategory(index) {
     // setValue(value => value + 1)
-    navigation.navigate("View Category", { previous: "Category Manager", index: {index} })
+    navigation.navigate("View Category", { previous: "Category Manager", index: { index } })
   }
 
   function showCategories() {
     return (
       <View>
         {
-          listOfCategories.map((object, index) => {
-            return (
-              <TouchableOpacity onPress={() => showCategory(index)}>
-                <Category key={object.title} title={object.title} color={object.color} color_icon={object.color_icon} index={index} value={value} setValue={setValue} />
-              </TouchableOpacity>
-            )
-          })
+          listOfCategories.length > 0 ?
+            listOfCategories.map((object, index) => {
+              return (
+                <TouchableOpacity onPress={() => showCategory(index)}>
+                  <Category key={object.title} title={object.title} color={object.color} color_icon={object.color_icon} index={index} value={value} setValue={setValue} />
+                </TouchableOpacity>
+              )
+            })
+            : <Text style={styles.placeHolderText}>Press the + button to add your first category</Text>
         }
       </View>
     );
@@ -71,6 +73,20 @@ export default function CategoryManagerScreen({ navigation, route }) {
 }
 
 const styles = StyleSheet.create({
+  placeHolderText: {
+    // marginBottom: 50,
+    fontSize: 18,
+    width: 220,
+    // borderColor:"#5CAEC9",
+    // borderWidth:2,
+    backgroundColor: "#94C9DB",
+    borderRadius: 25,
+    textAlign: "center",
+    justifyContent: "center",
+    alignSelf: "center",
+    padding: 20,
+    overflow: "hidden",
+  },
   addButtonWrapper: {
     alignSelf: "flex-end",
     margin: 10,

@@ -40,7 +40,7 @@ export default function TasksScreen({ route, navigation }) {
     return (
       <View>
         {
-          listOfTasks.map((object, index) => {
+          listOfTasks.length > 0 ? listOfTasks.map((object, index) => {
             let category_title = object.category
             let category = categoryList.find(item => item.title == category_title)
             let color = (category) ? category.color : "#b8b8b8"
@@ -58,6 +58,7 @@ export default function TasksScreen({ route, navigation }) {
               </TouchableOpacity>
             )
           })
+            : <Text style={styles.placeHolderText}>Press the + button to add your first task</Text>
         }
       </View>
     );
@@ -98,6 +99,20 @@ export default function TasksScreen({ route, navigation }) {
 }
 
 const styles = StyleSheet.create({
+  placeHolderText: {
+    // marginBottom: 50,
+    fontSize: 18,
+    width: 220,
+    // borderColor:"#5CAEC9",
+    // borderWidth:2,
+    backgroundColor: "#94C9DB",
+    borderRadius: 25,
+    textAlign: "center",
+    justifyContent: "center",
+    alignSelf: "center",
+    padding: 20,
+    overflow: "hidden",
+  },
   container: {
     flex: 1,
     backgroundColor: '#F8F8F8',

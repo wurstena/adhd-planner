@@ -16,8 +16,6 @@ export default function saveTasks(task) {
     priority_tasks.push(task)
   }
   sortArrayByDate(tasks)
-  console.log("saving tasks")
-  console.log(tasks)
 }
 
 export function completeTask(index) {

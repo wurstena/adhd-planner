@@ -18,13 +18,16 @@ export default function RewardManagerScreen({ navigation, route }) {
     return (
       <View>
         {
-          listOfRewards.map((object, index) => {
-            return (
-              <TouchableOpacity onPress={() => showReward(index)}>
-                <Reward key={object.title} title={object.title} index={index} value={value} setValue={setValue} />
-              </TouchableOpacity>
-            )
-          })
+          listOfRewards.length > 0 ?
+            listOfRewards.map((object, index) => {
+              return (
+                <TouchableOpacity onPress={() => showReward(index)}>
+                  <Reward key={object.title} title={object.title} index={index} value={value} setValue={setValue} />
+                </TouchableOpacity>
+              )
+            })
+            : 
+            <Text style={styles.placeHolderText}>Press the + button to add your first reward</Text>
         }
       </View>
     );
@@ -65,6 +68,20 @@ export default function RewardManagerScreen({ navigation, route }) {
 }
 
 const styles = StyleSheet.create({
+  placeHolderText: {
+    // marginBottom: 50,
+    fontSize: 18,
+    width: 220,
+    // borderColor:"#5CAEC9",
+    // borderWidth:2,
+    backgroundColor: "#94C9DB",
+    borderRadius: 25,
+    textAlign: "center",
+    justifyContent: "center",
+    alignSelf: "center",
+    padding: 20,
+    overflow: "hidden",
+  },
   addButtonWrapper: {
     alignSelf: "flex-end",
     margin: 10,
