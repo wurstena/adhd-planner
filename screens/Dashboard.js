@@ -52,7 +52,15 @@ export default function DashboardScreen({ route, navigation }) {
                         let color = (category) ? category.color : "#b8b8b8"
                         return (
                             <TouchableOpacity onPress={() => showTask(index)}>
-                                <Task task={object} text={object.title} key={index} color={color} index={index} value={value} confettiRef={confettiRef} setValue={setValue} />
+                                <Task task={object}
+                                    text={object.title}
+                                    key={index}
+                                    color={color}
+                                    index={index}
+                                    value={value}
+                                    confettiRef={confettiRef}
+                                    setValue={setValue}
+                                    previous={"Dashboard"} />
                             </TouchableOpacity>
                         )
                     }) : (priorityTaskList.length > 0 && totalTaskList.length > 0)
@@ -130,7 +138,7 @@ export default function DashboardScreen({ route, navigation }) {
 
             <ConfettiCannon
                 count={200}
-                origin={{ x: Dimensions.get("screen").width /2, y: -20}}
+                origin={{ x: Dimensions.get("screen").width / 2, y: -20 }}
                 autoStart={false}
                 explosionSpeed={1200}
                 fadeOut={true}

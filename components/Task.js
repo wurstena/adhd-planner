@@ -1,13 +1,17 @@
 import moment from 'moment';
 import React, { useState, useRef } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Alert } from 'react-native';
-import { completeTask, task_list, completed_task_list } from '../storage/saveInput';
+import { completeTask, completePriorityTask, task_list, completed_task_list } from '../storage/saveInput';
 
 const Task = (props) => {
   function completeTaskAtIndex(index, value) {
+    props.setValue(!value)
     props.confettiRef.current.start()
-    completeTask(index)
-    props.setValue(value => value + 1)
+    if (props.previous === "Dashboard") {
+      completePriorityTask(index)
+    } else {
+      completeTask(index)
+    }
     createAlert(props.task.reward ? `Your reward is: ${props.task.reward}!` : "")
   }
 

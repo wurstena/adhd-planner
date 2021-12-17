@@ -8,7 +8,7 @@ import ConfettiCannon from 'react-native-confetti-cannon';
 
 
 export default function TasksScreen({ route, navigation }) {
-  const [value, setValue] = useState(0); // integer state
+  const [value, setValue] = useState(false); // integer state
 
   navigation.setOptions({
     headerRight: () => (
@@ -26,11 +26,16 @@ export default function TasksScreen({ route, navigation }) {
     navigation.navigate("View Task", { previous: "Tasks", index: { index } })
   }
 
-  let listOfTasks = getTasksData()
+  const isFocused = useIsFocused();
+  useEffect(() => {
+    if (isFocused) {
+    }
+  }, [navigation, route, isFocused]);
+
   const confettiRef = useRef("confetti")
 
-
   function showTasks() {
+    let listOfTasks = getTasksData()
     let categoryList = getCategories()
     return (
       <View>
@@ -41,7 +46,15 @@ export default function TasksScreen({ route, navigation }) {
             let color = (category) ? category.color : "#b8b8b8"
             return (
               <TouchableOpacity onPress={() => showTask(index)}>
-                <Task task={object} text={object.title} key={index} color={color} index={index} confettiRef={confettiRef} value={value} setValue={setValue} />
+                <Task task={object}
+                  text={object.title}
+                  key={index}
+                  color={color}
+                  index={index}
+                  confettiRef={confettiRef}
+                  value={value}
+                  setValue={setValue}
+                  previous={"Tasks"} />
               </TouchableOpacity>
             )
           })
