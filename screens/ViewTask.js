@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
+import moment from 'moment';
 import { Alert, Keyboard, TextInput, ScrollView, Button, View, Text, StyleSheet, KeyboardAvoidingView } from "react-native";
 import { Ionicons } from '@expo/vector-icons';
 import { Dimensions } from 'react-native';
 import { ColorPicker } from 'react-native-status-color-picker';
-import { saveCategory, getCategories, getRewards, getTasksData, deleteTask } from '../storage/saveInput'
+import { saveCategory, getCategories, getRewards, getTasksData, deleteTask, getPriorityData } from '../storage/saveInput'
 import { useIsFocused } from "@react-navigation/native";
 import { TouchableOpacity } from 'react-native-gesture-handler';
 
@@ -37,7 +38,8 @@ export default function ViewTaskScreen({ route, navigation }) {
     const [value, setValue] = useState(0); // integer state
     // const [listOfCategories, setListOfCategories] = useState([])
 
-    let listOfTasks = getTasksData();
+
+    let listOfTasks = previous === "Dashboard" ? getPriorityData() : getTasksData();
 
     // const isFocused = useIsFocused();
     // useEffect(() => {
@@ -70,7 +72,7 @@ export default function ViewTaskScreen({ route, navigation }) {
                             marginRight: 5
                         }}>
                             <Text style={styles(null).sectionHeader}>Due Date</Text>
-                            <Text style={styles(null).sectionContent}>{listOfTasks[index].date}</Text>
+                            <Text style={styles(null).sectionContent}>{(moment(listOfTasks[index].date).format("MM/DD/YY") !== "Invalid date") ? moment(listOfTasks[index].date).format("MM/DD/YY") : null}</Text>
                         </View>
                         <View style={{
                             flexDirection: 'column',
@@ -78,7 +80,7 @@ export default function ViewTaskScreen({ route, navigation }) {
                             marginRight: 5
                         }}>
                             <Text style={styles(null).sectionHeader}>Due Time</Text>
-                            <Text style={styles(null).sectionContent}>{listOfTasks[index].time}</Text>
+                            <Text style={styles(null).sectionContent}>{(moment(listOfTasks[index].time).format('LT') !== "Invalid date") ? moment(listOfTasks[index].time).format('LT') : null}</Text>
                         </View>
                     </View>
                     <View style={{ flexDirection: "row", alignItems: "center", marginBottom: 15 }}>
